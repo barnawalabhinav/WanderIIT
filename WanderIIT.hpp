@@ -36,9 +36,11 @@ class WanderIIT {
 
         //The surface contained by the window
         SDL_Surface* ScreenSurface = NULL;
+        SDL_Texture* ScreenTexture = NULL;
 
         //The object we will load and show on the screen
-        SDL_Surface* object = NULL;
+        SDL_Surface* objectSurface = NULL;
+        SDL_Texture* objectTexture = NULL;
 };
 
 #endif /* WanderIIT_hpp*/

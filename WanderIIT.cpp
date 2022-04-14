@@ -15,8 +15,8 @@ bool WanderIIT::init (const char *name, int xpos, int ypos, int width, int heigh
         fullscreen_flag = SDL_WINDOW_FULLSCREEN;
     }
 
-    offset.x = 0;
-    offset.y = 0;
+    offset.x = 100;
+    offset.y = 250;
 
     // Initialize all the SDL subsystems
     if( SDL_Init( SDL_INIT_EVERYTHING ) != 0 ) {
@@ -54,7 +54,7 @@ bool WanderIIT::init (const char *name, int xpos, int ypos, int width, int heigh
     gladLoadGLLoader(SDL_GL_GetProcAddress);
 
     // Creating the Renderer for our window
-    renderer = SDL_CreateRenderer( window, -1, 0);
+    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED);
                         
     if( renderer == NULL ) {
         printf( "Renderer could not be created!, SDL_Error: %s\n", SDL_GetError() );
@@ -62,11 +62,22 @@ bool WanderIIT::init (const char *name, int xpos, int ypos, int width, int heigh
         return false;
     }
     
+    printf ("Renderer Created!\n");
+
+    ScreenSurface = SDL_LoadBMP( "Resources/map.bmp" );
+    ScreenTexture = SDL_CreateTextureFromSurface(renderer, ScreenSurface);
+
+    if ( ScreenSurface == NULL ) {
+        printf( "Screen Surface could not be created!, SDL_Error: %s\n", SDL_GetError() );
+        isRunning = false;
+        return false;
+    }
+
+    printf( "Screen Created!\n" );
+
     // Select the color for drawing. It is set to red here.
     //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
-    printf( "Renderer Created!\n" );
-                
+/*               
     //Get window surface
     ScreenSurface = SDL_GetWindowSurface( window );
     if ( ScreenSurface == NULL ) {
@@ -77,15 +88,13 @@ bool WanderIIT::init (const char *name, int xpos, int ypos, int width, int heigh
     
     //Background Color of the surface
     SDL_FillRect(ScreenSurface, NULL, SDL_MapRGB(ScreenSurface->format, 0, 0, 0));
-
-    printf( "Surface Created!\n" );
-
+    
     glViewport(0, 0, 640, 480);
     //glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     SDL_GL_SwapWindow( window );
-
+*/
     // Accessed by the running() constructor
     isRunning = true;
 
@@ -137,12 +146,12 @@ void WanderIIT::handleEvents()
                     offset.x = offset.x - 1;
                     break;
                 case SDLK_DOWN :
-                    // Limit the object within the screen height
-                    if (offset.y + object->h < h) { offset.y = offset.y + 1; }
+                    // Limit the objectSurface within the screen height
+                    if (offset.y + objectSurface->h < h) { offset.y = offset.y + 1; }
                     break;
                 case SDLK_RIGHT :
-                    // Limit the object within the screen width
-                    if (offset.x + object->w < w) { offset.x = offset.x + 1; }
+                    // Limit the objectSurface within the screen width
+                    if (offset.x + objectSurface->w < w) { offset.x = offset.x + 1; }
                     break;
                 default :
                     break;
@@ -151,21 +160,28 @@ void WanderIIT::handleEvents()
             break;
     }
         
-    //Apply the object image
-    SDL_BlitSurface( object, NULL, ScreenSurface, &offset );
+    //Apply the objectSurface image
+    //SDL_BlitSurface( objectSurface, NULL, ScreenSurface, &offset );
 
 }
 
 void WanderIIT::update()
 {
     //Update the surface
-    SDL_UpdateWindowSurface( window );
+    //SDL_UpdateWindowSurface( window );
 }
 
 void WanderIIT::render()
 {
     // Clear the current rendering target with the drawing color
     SDL_RenderClear(renderer);
+    // Get the background and the player object on the screen
+    SDL_RenderCopy(renderer, ScreenTexture, NULL, NULL);
+    int object_width, object_height;
+    SDL_QueryTexture(objectTexture, NULL, NULL, &object_width, &object_height);
+    offset.w = object_width;
+    offset.h = object_height;
+    SDL_RenderCopy(renderer, objectTexture, NULL, &offset);
     // Update the screen with any rendering performed since the previous call
     SDL_RenderPresent(renderer);
 }
@@ -173,21 +189,23 @@ void WanderIIT::render()
 bool WanderIIT::loadmedia( const char* obj )
 {
     //Load image
-    object = SDL_LoadBMP( obj );
-	if ( object == NULL ) {
+    objectSurface = SDL_LoadBMP( obj );
+    objectTexture = SDL_CreateTextureFromSurface(renderer, objectSurface);
+	if ( objectSurface == NULL ) {
         printf( "Unable to load the image %s! SDL_ERROR: %s\n", obj, SDL_GetError() );
         isRunning = false;
         return false;
     }
     
+    printf( "Player Created!\n" );
     return isRunning;
 }
 
 void WanderIIT::clean()
 {
-    //Deallocate object surface
-    SDL_FreeSurface(object);
-    object = NULL;
+    //Deallocate objectSurface surface
+    SDL_FreeSurface(objectSurface);
+    objectSurface = NULL;
 
     //Deallocate Screen surface
     SDL_FreeSurface( ScreenSurface );

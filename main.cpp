@@ -7,6 +7,7 @@ int main ( int args, const char* argv[])
     game = new WanderIIT();
 
     game->init("WanderIIT", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
+    game->loadmedia("Resources/obj1.bmp");
 
     while (game->running()) {
         game->handleEvents();

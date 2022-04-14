@@ -1,8 +1,11 @@
 //Purpy Pupple's amazing maze generator. 
 //Released under the CC-BY-SA 3.0 License and the GFDL
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+using namespace std;
 
 #define UP 0     //-y
 #define DOWN 1   //+y
@@ -14,9 +17,9 @@
 #define RED   fprintf(outfile, "%c%c%c", 0,0,255)
 
 #define nodeadend//generate a maze without any dead ends! (consequently, many solutions to maze)
-//#define prim    //enable this to generate mazes using prim's algorithm.
+#define prim    //enable this to generate mazes using prim's algorithm.
 #define backtrack//enable this to generate mazes using depth-first search. Don't enable both.
-//#define movie   //this option spams bitmaps to illustrate each step of generation.
+#define movie   //this option spams bitmaps to illustrate each step of generation.
 
 long numin=1;     //Number of cells in the maze.
 const int xsize=152;
@@ -191,7 +194,7 @@ void savebmp(int xspecial, int yspecial){
 
 	char filename[200];
 	
-	sprintf(filename, "%s_%dx%d_n%d.bmp", OUTFILE, xsize, ysize, numin);
+	sprintf(filename, "%s_%dx%d_n%ld.bmp", OUTFILE, xsize, ysize, numin);
 	paddedsize = ((width * 3) + extrabytes) * height;
 
 	unsigned int headers[13] = {paddedsize + 54, 0, 54, 40, width, height, 0, 0, paddedsize, 0, 0, 0, 0};

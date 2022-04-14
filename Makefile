@@ -4,12 +4,15 @@ CC = g++
 #Display all warnings
 CF = -Wall -g
 
+#Paths to be included
+IPATH = -I./glad/include/
+
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
 #COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2
+LINKER_FLAGS = -lSDL2 -ldl
 
 #SRC_DIR specifies the directly of the source files. All .cpp files in this directory will be compiled
 SRC_DIR := .
@@ -38,14 +41,20 @@ SRC_DIR := .
 
 #======================================================#
 
-all: main.o WanderIIT.o
-	$(CC) $(CF) -o game.out main.o WanderIIT.o $(LINKER_FLAGS)
+all: main.o WanderIIT.o glad.o
+	$(CC) $(CF) $(IPATH) -o game.out main.o WanderIIT.o glad.o $(LINKER_FLAGS)
 	
+glad.o: ./glad/src/glad.c
+	$(CC) $(CF) $(IPATH) -c ./glad/src/glad.c -o glad.o $(LINKER_FLAGS)
+
 WanderIIT.o: WanderIIT.cpp WanderIIT.hpp
-	$(CC) $(CF) -c WanderIIT.cpp $(LINKER_FLAGS)
+	$(CC) $(CF) $(IPATH) -c WanderIIT.cpp $(LINKER_FLAGS)
 	
 main.o: main.cpp WanderIIT.hpp
-	$(CC) $(CF) -c main.cpp $(LINKER_FLAGS)
+	$(CC) $(CF) $(IPATH) -c main.cpp $(LINKER_FLAGS)
 	 
 clean:
 	rm *.o
+
+test:
+	./game.out
