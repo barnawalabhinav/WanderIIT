@@ -12,7 +12,7 @@ IPATH = -I./glad/include/
 #COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 -ldl
+LINKER_FLAGS = -lSDL2 -ldl -lSDL2_mixer
 
 #SRC_DIR specifies the directly of the source files. All .cpp files in this directory will be compiled
 SRC_DIR := .
@@ -41,15 +41,18 @@ SRC_DIR := .
 
 #======================================================#
 
-all: main.o WanderIIT.o glad.o
-	$(CC) $(CF) $(IPATH) -o game.out main.o WanderIIT.o glad.o $(LINKER_FLAGS)
+all: main.o WanderIIT.o Hurdles.o
+	$(CC) $(CF) $(IPATH) -o game.out main.o WanderIIT.o Hurdles.o $(LINKER_FLAGS)
 	
-glad.o: ./glad/src/glad.c
-	$(CC) $(CF) $(IPATH) -c ./glad/src/glad.c -o glad.o $(LINKER_FLAGS)
+#glad.o: ./glad/src/glad.c
+#	$(CC) $(CF) $(IPATH) -c ./glad/src/glad.c -o glad.o $(LINKER_FLAGS)
 
-WanderIIT.o: WanderIIT.cpp WanderIIT.hpp
+WanderIIT.o: WanderIIT.cpp WanderIIT.hpp Hurdles.hpp
 	$(CC) $(CF) $(IPATH) -c WanderIIT.cpp $(LINKER_FLAGS)
 	
+Hurdles.o: Hurdles.cpp Hurdles.hpp
+	$(CC) $(CF) $(IPATH) -c Hurdles.cpp $(LINKER_FLAGS)
+
 main.o: main.cpp WanderIIT.hpp
 	$(CC) $(CF) $(IPATH) -c main.cpp $(LINKER_FLAGS)
 	 
