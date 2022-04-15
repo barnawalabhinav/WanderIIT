@@ -4,6 +4,9 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <string.h>
+#include "Gamemap_back.h"
+#include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -11,7 +14,8 @@ class WanderIIT {
     public:
         WanderIIT();
         ~WanderIIT();
-
+        
+        //int get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int y);
         bool init(const char* name, int xpos, int ypos, int width, int height, bool fullscreen);
         void SetPixel( SDL_Surface* surface, int x, int y, uint8_t r, uint8_t g, uint8_t b );
         void handleEvents();
@@ -25,6 +29,10 @@ class WanderIIT {
     private:
         //The position where object is to be placed
         SDL_Rect offset;
+        //The original size of the map screen
+        SDL_Rect map_pos;
+        //Player object dimensions
+        int object_width, object_height, screen_width, screen_height, curr_win_width, curr_win_height;
 
         bool isRunning;
         
