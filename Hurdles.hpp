@@ -1,9 +1,7 @@
 #ifndef Hurdles_hpp
 #define Hurdles_hpp
 
-#include "SDL2/SDL.h"
-#include <iostream>
-#include "GameMap.h"
+#include "Player.hpp"
 
 using namespace std;
 

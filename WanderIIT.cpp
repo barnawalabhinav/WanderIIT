@@ -4,11 +4,139 @@
 // Constructor
 WanderIIT::WanderIIT()
 {
+    isOnline = true;
+    char ip[20];
+
+    if(isOnline)
+    {
+        //127.0.0.1
+        cout << "Please enter your ip address : ";
+        cin.getline(ip, 20);
+        net = new network(ip);
+    }
+
+    Himadri.x = 949;
+    Himadri.y = 141;
+    Himadri.w = 4;
+    Himadri.h = 8;
+
+    Kailash.x = 945;
+    Kailash.y = 178;
+    Kailash.w = 4;
+    Kailash.h = 6;
+
+    LHC.x = 781;
+    LHC.y = 329;
+    LHC.w = 4;
+    LHC.h = 4;
+
+    Main_Building.x = 728;
+    Main_Building.y = 246;
+    Main_Building.w = 4;
+    Main_Building.h = 4;
+
+    Library.x = 681;
+    Library.y = 298;
+    Library.w = 4;
+    Library.h = 4;
+
+    Amul.x = 654;
+    Amul.y = 290;
+    Amul.w = 4;
+    Amul.h = 4;
+
+    Bharti_School.x = 606;
+    Bharti_School.y = 315;
+    Bharti_School.w = 4;
+    Bharti_School.h = 4;
+
+    Ground.x = 589;
+    Ground.y = 355;
+    Ground.w = 4;
+    Ground.h = 4;
+
+    Girnar.x = 443;
+    Girnar.y = 205;
+    Girnar.w = 3;
+    Girnar.h = 4;
+
+    Hospital.x = 474;
+    Hospital.y = 315;
+    Hospital.w = 4;
+    Hospital.h = 2;
+
+    Udaigiri.x = 476;
+    Udaigiri.y = 167;
+    Udaigiri.w = 7;
+    Udaigiri.h = 4;
+
+    Satpura.x = 397;
+    Satpura.y = 191;
+    Satpura.w = 5;
+    Satpura.h = 4;
+
+    Masala_Mix.x = 434;
+    Masala_Mix.y = 321;
+    Masala_Mix.w = 2;
+    Masala_Mix.h = 8;
+
+    Rajdhani.x = 441;
+    Rajdhani.y = 302;
+    Rajdhani.w = 4;
+    Rajdhani.h = 8;
+
+    Vindhyachal.x = 325;
+    Vindhyachal.y = 197;
+    Vindhyachal.w = 4;
+    Vindhyachal.h = 5;
+
+    Zanskar.x = 345;
+    Zanskar.y = 296;
+    Zanskar.w = 4;
+    Zanskar.h = 4;
+
+    Shivalik.x = 305;
+    Shivalik.y = 265;
+    Shivalik.w = 3;
+    Shivalik.h = 3;
+
+    SAC.x = 320;
+    SAC.y = 390;
+    SAC.w = 3;
+    SAC.h = 3;
+
+    Kumaon.x = 224;
+    Kumaon.y = 193;
+    Kumaon.w = 4;
+    Kumaon.h = 2;
+
+    Jwala.x = 162;
+    Jwala.y = 226;
+    Jwala.w = 4;
+    Jwala.h = 4;
+
+    Aravali.x = 169;
+    Aravali.y = 296;
+    Aravali.w = 5;
+    Aravali.h = 5;
+
+    Karakoram.x = 166;
+    Karakoram.y = 365;
+    Karakoram.w = 4;
+    Karakoram.h = 4;
+
+    Nilgiri.x = 174;
+    Nilgiri.y = 438;
+    Nilgiri.w = 4;
+    Nilgiri.h = 4;
 }
 // Deconstructor
 WanderIIT::~WanderIIT()
 {
+    delete net;
 }
+
+Player *Player1 = nullptr;
 
 Dog *Dog0 = nullptr;
 Dog *Dog1 = nullptr;
@@ -32,8 +160,10 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     Start.x = Start_Xpos;
     Start.y = Start_Ypos;
 
-    offset.x = Start_Xpos;
-    offset.y = Start_Ypos;
+    Player1 = new Player();
+
+    Player1->position.x = Start_Xpos;
+    Player1->position.y = Start_Ypos;
     map_pos.x = 0;
     map_pos.y = 0;
 
@@ -177,15 +307,16 @@ int WanderIIT::get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int 
 
 bool WanderIIT::loadmedia()
 {
-    // Load player
-    objectSurface = SDL_LoadBMP("Resources/player.bmp");
-    objectTexture = SDL_CreateTextureFromSurface(renderer, objectSurface);
-    if (objectSurface == NULL)
+    // Load player1
+    Player1->surface = SDL_LoadBMP("Resources/Player1.bmp");
+    Player1->texture = SDL_CreateTextureFromSurface(renderer, Player1->surface);
+    if (Player1->surface == NULL)
     {
-        printf("Unable to load the image Resources/player.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        printf("Unable to load the image Resources/Player1.bmp! SDL_ERROR: %s\n", SDL_GetError());
         isRunning = false;
         return false;
     }
+    SDL_QueryTexture(Player1->texture, NULL, NULL, &Player1->position.w, &Player1->position.h);
 
     // Load Dogs
     Dog0->surface = SDL_LoadBMP("Resources/Dog.bmp");
@@ -347,8 +478,8 @@ void WanderIIT::handleEvents()
         int change_y = (win_h - curr_win_height) / 2;
         map_pos.x += change_x;
         map_pos.y += change_y;
-        offset.x += change_x;
-        offset.y += change_y;
+        Player1->position.x += change_x;
+        Player1->position.y += change_y;
         curr_win_width = win_w;
         curr_win_height = win_h;
     }
@@ -372,9 +503,6 @@ void WanderIIT::handleEvents()
     Prof3->move(curr_win_width, curr_win_height, map_pos, 54);
     Prof4->move(curr_win_width, curr_win_height, map_pos, 213);
 
-    SDL_Event event;
-    // Starting Event Loop
-    SDL_PollEvent(&event);
     /*
     //Capture Mouse Here
         int x, y;
@@ -387,190 +515,41 @@ void WanderIIT::handleEvents()
         }
     */
 
-    // Capture keyboard here
+    SDL_Event event;
+    
+    // Starting Event Loop
+    SDL_PollEvent(&event);
+
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
-    // Handle Diagonol Movements
     if (state[SDL_SCANCODE_RETURN])
     {
         printf("<RETURN> is pressed.\n");
     }
-    if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_UP])
-    {
-        if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + Key_Reverse + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.x + map_pos.x + object_width < win_w)
-            {
-                offset.x += Key_Reverse;
-            }
-        }
-        if (map_data[(offset.y - map_pos.y - Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.y > map_pos.y)
-            {
-                offset.y -= Key_Reverse;
-            }
-        }
-    }
-    if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_UP])
-    {
-        if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x - Key_Reverse + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.x > map_pos.x)
-            {
-                offset.x -= Key_Reverse;
-            }
-        }
-        if (map_data[(offset.y - map_pos.y - Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.y > map_pos.y)
-            {
-                offset.y -= Key_Reverse;
-            }
-        }
-    }
-    if (state[SDL_SCANCODE_RIGHT] && state[SDL_SCANCODE_DOWN])
-    {
-        if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + Key_Reverse + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.x + map_pos.x + object_width < win_w)
-            {
-                offset.x += Key_Reverse;
-            }
-        }
-        if (map_data[(offset.y - map_pos.y + Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.y + map_pos.y + object_height < win_h)
-            {
-                offset.y += Key_Reverse;
-            }
-        }
-    }
-    if (state[SDL_SCANCODE_LEFT] && state[SDL_SCANCODE_DOWN])
-    {
-        if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x - Key_Reverse + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.x > map_pos.x)
-            {
-                offset.x -= Key_Reverse;
-            }
-        }
-        if (map_data[(offset.y - map_pos.y + Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-        {
-            if (offset.y + map_pos.y + object_height < win_h)
-            {
-                offset.y += Key_Reverse;
-            }
-        }
-    }
-
-    switch (event.type)
-    {
     // Handle Different Events
-    case SDL_QUIT:
+    else if (event.type == SDL_QUIT)
+    {
         isRunning = false;
-        break;
-    // Handle Orthogonol Movements
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_UP:
-            if (map_data[(offset.y - map_pos.y - Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1 && map_data[(offset.y - map_pos.y - 2 + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.y > map_pos.y)
-                {
-                    offset.y -= Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_LEFT:
-            if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x - Key_Reverse + (objectSurface->w) / 2] != 1 && map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x - 2 + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.x > map_pos.x)
-                {
-                    offset.x -= Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_DOWN:
-            // Limit the objectSurface within the screen height
-            if (map_data[(offset.y - map_pos.y + Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1 && map_data[(offset.y - map_pos.y + 2 + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.y + map_pos.y + objectSurface->h < win_h)
-                {
-                    offset.y += Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_RIGHT:
-            // Limit the objectSurface within the screen width
-            if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + Key_Reverse + (objectSurface->w) / 2] != 1 && map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + 2 + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.x + map_pos.x + objectSurface->w < win_w)
-                {
-                    offset.x += Key_Reverse;
-                }
-            }
-            break;
-        default:
-            break;
-        }
-    case SDL_KEYUP:
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_UP:
-            if (map_data[(offset.y - map_pos.y - Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.y > map_pos.y)
-                {
-                    offset.y -= Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_LEFT:
-            if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x - Key_Reverse + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.x > map_pos.x)
-                {
-                    offset.x -= Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_DOWN:
-            // Limit the objectSurface within the screen height
-            if (map_data[(offset.y - map_pos.y + Key_Reverse + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.y + map_pos.y + objectSurface->h < win_h)
-                {
-                    offset.y += Key_Reverse;
-                }
-            }
-            break;
-        case SDLK_RIGHT:
-            // Limit the objectSurface within the screen width
-            if (map_data[(offset.y - map_pos.y + (objectSurface->h) / 2) * MAP_FRAME_WIDTH + offset.x - map_pos.x + Key_Reverse + (objectSurface->w) / 2] != 1)
-            {
-                if (offset.x + map_pos.x + objectSurface->w < win_w)
-                {
-                    offset.x += Key_Reverse;
-                }
-            }
-            break;
-        default:
-            break;
-        }
-    default:
-        break;
+        net->quit(Player1);
+    }
+    else
+    {
+        // Capture movement of player
+        Player1->move(event, state, curr_win_width, curr_win_height, map_pos, Key_Reverse);
     }
 
-    // Apply the objectSurface image
-    // SDL_BlitSurface( objectSurface, NULL, ScreenSurface, &offset );
+    // Apply the Player1->surface image
+    // SDL_BlitSurface( Player1->surface, NULL, ScreenSurface, &offset );
 }
 
 void WanderIIT::update()
 {
     // Update the surface
-    // SDL_UpdateWindowSurface( window );
+    if(isOnline)
+    {
+        net->send(Player1);
+        net->recv(players, Player1);
+    }
 }
 
 void WanderIIT::render()
@@ -582,12 +561,29 @@ void WanderIIT::render()
     map_pos.w = MAP_FRAME_WIDTH;
     map_pos.h = MAP_FRAME_HEIGHT;
     SDL_RenderCopy(renderer, ScreenTexture, NULL, &map_pos);
-    // Get the player object on the screen
-    SDL_QueryTexture(objectTexture, NULL, NULL, &object_width, &object_height);
-    offset.w = object_width;
-    offset.h = object_height;
-    SDL_RenderCopy(renderer, objectTexture, NULL, &offset);
+    
+    // Get the Player1 on the screen
+    SDL_QueryTexture(Player1->texture, NULL, NULL, &object_width, &object_height);
+    Player1->position.w = object_width;
+    Player1->position.h = object_height;
+    SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
 
+    cout << "Player1 rendered!" << endl;
+    cout << players.size() << endl;
+/*
+    for (int i = 0; i < players.size(); i++)
+    {
+        players[i]->surface = SDL_LoadBMP("Resources/Player2.bmp");
+        players[i]->texture = SDL_CreateTextureFromSurface(renderer, players[i]->surface);
+        if (players[i]->surface == NULL)
+        {
+            printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+            isRunning = false;
+        }
+        SDL_RenderCopy(renderer, players[i]->texture, NULL, &players[i]->position);
+        cout << "Player " << i+2 << " rendered!" << endl;
+    }
+*/
     // Update position of Dogs on the screen
     SDL_RenderCopy(renderer, Dog0->texture, NULL, &Dog0->position);
     SDL_RenderCopy(renderer, Dog1->texture, NULL, &Dog1->position);
@@ -613,32 +609,32 @@ void WanderIIT::render()
 
 void WanderIIT::collison()
 {
-    if (offset.x - Start.x < 4 && Start.x - offset.x < 4 && offset.y - Start.y < 4 && Start.y - offset.y < 4)
+    if (Player1->position.x - Start.x < Start.w && Start.x - Player1->position.x < Start.w && Player1->position.y - Start.y < Start.h && Start.y - Player1->position.y < Start.h)
     {
         Key_Reverse = 1;
     }
 
-    if ((offset.x - Dog0->position.x < 4 && Dog0->position.x - offset.x < 4 && offset.y - Dog0->position.y < 4 && Dog0->position.y - offset.y < 4) ||
-        (offset.x - Dog1->position.x < 4 && Dog1->position.x - offset.x < 4 && offset.y - Dog1->position.y < 4 && Dog1->position.y - offset.y < 4) ||
-        (offset.x - Dog2->position.x < 4 && Dog2->position.x - offset.x < 4 && offset.y - Dog2->position.y < 4 && Dog2->position.y - offset.y < 4) ||
-        (offset.x - Dog3->position.x < 4 && Dog3->position.x - offset.x < 4 && offset.y - Dog3->position.y < 4 && Dog3->position.y - offset.y < 4) ||
-        (offset.x - Dog4->position.x < 4 && Dog4->position.x - offset.x < 4 && offset.y - Dog4->position.y < 4 && Dog4->position.y - offset.y < 4) ||
-        (offset.x - Dog5->position.x < 4 && Dog5->position.x - offset.x < 4 && offset.y - Dog5->position.y < 4 && Dog5->position.y - offset.y < 4) ||
-        (offset.x - Dog6->position.x < 4 && Dog6->position.x - offset.x < 4 && offset.y - Dog6->position.y < 4 && Dog6->position.y - offset.y < 4) ||
-        (offset.x - Dog7->position.x < 4 && Dog7->position.x - offset.x < 4 && offset.y - Dog7->position.y < 4 && Dog7->position.y - offset.y < 4) ||
-        (offset.x - Dog8->position.x < 4 && Dog8->position.x - offset.x < 4 && offset.y - Dog8->position.y < 4 && Dog8->position.y - offset.y < 4) ||
-        (offset.x - Dog9->position.x < 4 && Dog9->position.x - offset.x < 4 && offset.y - Dog9->position.y < 4 && Dog9->position.y - offset.y < 4))
+    if ((Player1->position.x - Dog0->position.x < 4 && Dog0->position.x - Player1->position.x < 4 && Player1->position.y - Dog0->position.y < 4 && Dog0->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog1->position.x < 4 && Dog1->position.x - Player1->position.x < 4 && Player1->position.y - Dog1->position.y < 4 && Dog1->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog2->position.x < 4 && Dog2->position.x - Player1->position.x < 4 && Player1->position.y - Dog2->position.y < 4 && Dog2->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog3->position.x < 4 && Dog3->position.x - Player1->position.x < 4 && Player1->position.y - Dog3->position.y < 4 && Dog3->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog4->position.x < 4 && Dog4->position.x - Player1->position.x < 4 && Player1->position.y - Dog4->position.y < 4 && Dog4->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog5->position.x < 4 && Dog5->position.x - Player1->position.x < 4 && Player1->position.y - Dog5->position.y < 4 && Dog5->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog6->position.x < 4 && Dog6->position.x - Player1->position.x < 4 && Player1->position.y - Dog6->position.y < 4 && Dog6->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog7->position.x < 4 && Dog7->position.x - Player1->position.x < 4 && Player1->position.y - Dog7->position.y < 4 && Dog7->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog8->position.x < 4 && Dog8->position.x - Player1->position.x < 4 && Player1->position.y - Dog8->position.y < 4 && Dog8->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Dog9->position.x < 4 && Dog9->position.x - Player1->position.x < 4 && Player1->position.y - Dog9->position.y < 4 && Dog9->position.y - Player1->position.y < 4))
     {
         Mix_PlayChannel( -1, Dog_collison, 0 );
-        offset.x = Start.x;
-        offset.y = Start.y;
+        Player1->position.x = Start.x;
+        Player1->position.y = Start.y;
     }
 
-    if ((offset.x - Prof0->position.x < 4 && Prof0->position.x - offset.x < 4 && offset.y - Prof0->position.y < 4 && Prof0->position.y - offset.y < 4) ||
-        (offset.x - Prof1->position.x < 4 && Prof1->position.x - offset.x < 4 && offset.y - Prof1->position.y < 4 && Prof1->position.y - offset.y < 4) ||
-        (offset.x - Prof2->position.x < 4 && Prof2->position.x - offset.x < 4 && offset.y - Prof2->position.y < 4 && Prof2->position.y - offset.y < 4) ||
-        (offset.x - Prof3->position.x < 4 && Prof3->position.x - offset.x < 4 && offset.y - Prof3->position.y < 4 && Prof3->position.y - offset.y < 4) ||
-        (offset.x - Prof4->position.x < 4 && Prof4->position.x - offset.x < 4 && offset.y - Prof4->position.y < 4 && Prof4->position.y - offset.y < 4))
+    if ((Player1->position.x - Prof0->position.x < 4 && Prof0->position.x - Player1->position.x < 4 && Player1->position.y - Prof0->position.y < 4 && Prof0->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Prof1->position.x < 4 && Prof1->position.x - Player1->position.x < 4 && Player1->position.y - Prof1->position.y < 4 && Prof1->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Prof2->position.x < 4 && Prof2->position.x - Player1->position.x < 4 && Player1->position.y - Prof2->position.y < 4 && Prof2->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Prof3->position.x < 4 && Prof3->position.x - Player1->position.x < 4 && Player1->position.y - Prof3->position.y < 4 && Prof3->position.y - Player1->position.y < 4) ||
+        (Player1->position.x - Prof4->position.x < 4 && Prof4->position.x - Player1->position.x < 4 && Player1->position.y - Prof4->position.y < 4 && Prof4->position.y - Player1->position.y < 4))
     {
         Mix_PlayChannel( -1, Prof_collison, 0 );
         Key_Reverse = -1;
@@ -647,9 +643,9 @@ void WanderIIT::collison()
 
 void WanderIIT::clean()
 {
-    // Deallocate objectSurface surface
-    SDL_FreeSurface(objectSurface);
-    objectSurface = NULL;
+    // Deallocate Player1->surface surface
+    SDL_FreeSurface(Player1->surface);
+    Player1->surface = NULL;
 
     // Deallocate Screen surface
     SDL_FreeSurface(ScreenSurface);

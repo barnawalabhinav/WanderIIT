@@ -22,7 +22,7 @@ int main()
             case 0xff970035 : fout << "8, "; break; //Bharti School
             case 0xff4900d7 : fout << "9, "; break; //Ground
             case 0xff002bd3 : fout << "10, "; break; //Masala Mix
-            case 0xffc30040 : fout << "11, "; break; //Rajhdhani
+            case 0xffc30040 : fout << "11, "; break; //Rajdhani
             case 0xffe731d4 : fout << "12, "; break; //Hospital
             case 0xff15009b : fout << "13, "; break; //Udaigiri
             case 0xff2b00d0 : fout << "14, "; break; //Girnar
