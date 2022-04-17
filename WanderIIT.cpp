@@ -157,6 +157,66 @@ Prof *Prof4 = nullptr;
 
 bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int Start_Xpos, int Start_Ypos)
 {
+    SDL_Window *Instrwindow = nullptr;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        std::cout << "SDL could not be initialized: " << SDL_GetError();
+    }
+    else
+    {
+        std::cout << "SDL video system is ready to go\n";
+    }
+    Instrwindow = SDL_CreateWindow("C++ SDL2 Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1354, 687, SDL_WINDOW_SHOWN);
+
+    SDL_Renderer *Instrrenderer = nullptr;
+    Instrrenderer = SDL_CreateRenderer(Instrwindow, -1, SDL_RENDERER_ACCELERATED);
+    if (TTF_Init() == -1)
+    {
+        std::cout << "Could not initailize SDL2_ttf, error: " << TTF_GetError() << std::endl;
+    }
+    else
+    {
+        std::cout << "SDL2_ttf system ready to go!" << std::endl;
+    }
+    TTF_Font *ourFont = TTF_OpenFont("./fonts/8bitOperatorPlus8-Regular.ttf", 32);
+    if (ourFont == nullptr)
+    {
+        std::cout << "Could not load font" << std::endl;
+        exit(1);
+    }
+
+    SDL_Surface *surfaceText = TTF_RenderText_Blended_Wrapped(ourFont, "            * Welcome to Wander IIT! *\n* Here you have to reach your destination starting from your hostel while surpassing various hurdles! \n * Use the arraow keys to move only on the roads, though you may move diagonally using two keys together (Left+Up will take you towards North-West) \n * Encountering a dog injurs you and the very helpful community of IIT Delhi drops you at the hospital! \n * On encountering an angry Professor, you lose your mental balance and start walking insanely (your key movements reverse)! Go to your hostel to rejuvenate yourself!", {255, 255, 255}, 687);
+    SDL_Texture *textureText = SDL_CreateTextureFromSurface(Instrrenderer, surfaceText);
+    SDL_FreeSurface(surfaceText);
+    SDL_Rect rectangle;
+    rectangle.x = 20;
+    rectangle.y = 20;
+    rectangle.w = 1318;
+    rectangle.h = 100;
+    bool InstrRunning = true;
+    while (InstrRunning)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                InstrRunning = false;
+            }
+        }
+        SDL_SetRenderDrawColor(Instrrenderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
+        SDL_RenderClear(Instrrenderer);
+        SDL_RenderCopy(Instrrenderer, textureText, NULL, &rectangle);
+        SDL_RenderPresent(Instrrenderer);
+
+        SDL_Delay(3000);
+        InstrRunning = false;
+    }
+
+    SDL_DestroyTexture(textureText);
+    SDL_DestroyWindow(Instrwindow);
+    TTF_CloseFont(ourFont);
+
     Start.x = Start_Xpos;
     Start.y = Start_Ypos;
 
@@ -568,8 +628,6 @@ void WanderIIT::render()
     Player1->position.h = object_height;
     SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
 
-    cout << "Player1 rendered!" << endl;
-    cout << players.size() << endl;
 /*
     for (int i = 0; i < players.size(); i++)
     {
@@ -626,8 +684,8 @@ void WanderIIT::collison()
         (Player1->position.x - Dog9->position.x < 4 && Dog9->position.x - Player1->position.x < 4 && Player1->position.y - Dog9->position.y < 4 && Dog9->position.y - Player1->position.y < 4))
     {
         Mix_PlayChannel( -1, Dog_collison, 0 );
-        Player1->position.x = Start.x;
-        Player1->position.y = Start.y;
+        Player1->position.x = 476;
+        Player1->position.y = 316;
     }
 
     if ((Player1->position.x - Prof0->position.x < 4 && Prof0->position.x - Player1->position.x < 4 && Player1->position.y - Prof0->position.y < 4 && Prof0->position.y - Player1->position.y < 4) ||

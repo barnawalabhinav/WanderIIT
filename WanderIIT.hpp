@@ -1,6 +1,7 @@
 #ifndef WanderIIT_hpp
 #define WanderIIT_hpp
 
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <string.h>
 #include <fstream>

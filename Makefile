@@ -12,7 +12,7 @@ CF = -Wall -g
 #COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 -ldl -lSDL2_mixer -lSDL2_net
+LINKER_FLAGS = -lSDL2 -ldl -lSDL2_mixer -lSDL2_net -lSDL2_ttf
 
 #SRC_DIR specifies the directly of the source files. All .cpp files in this directory will be compiled
 SRC_DIR := .
