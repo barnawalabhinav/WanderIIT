@@ -50,13 +50,13 @@ all: main.o WanderIIT.o Hurdles.o network.o Player.o
 network.o: network.cpp
 	$(CC) $(CF) -c network.cpp $(LINKER_FLAGS)
 
-Player.o: Player.cpp
+Player.o: Player.cpp GameMap.h
 	$(CC) $(CF) -c Player.cpp $(LINKER_FLAGS)
 
 WanderIIT.o: WanderIIT.cpp
 	$(CC) $(CF) -c WanderIIT.cpp $(LINKER_FLAGS)
 	
-Hurdles.o: Hurdles.cpp
+Hurdles.o: Hurdles.cpp Player.hpp
 	$(CC) $(CF) -c Hurdles.cpp $(LINKER_FLAGS)
 
 main.o: main.cpp

@@ -157,6 +157,7 @@ Prof *Prof4 = nullptr;
 
 bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int Start_Xpos, int Start_Ypos)
 {
+    // First display the instruction window
     SDL_Window *Instrwindow = nullptr;
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -216,6 +217,8 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     SDL_DestroyTexture(textureText);
     SDL_DestroyWindow(Instrwindow);
     TTF_CloseFont(ourFont);
+
+    // Next display the game window
 
     Start.x = Start_Xpos;
     Start.y = Start_Ypos;
@@ -412,26 +415,26 @@ bool WanderIIT::loadmedia()
     printf("Dogs Created!\n");
 
     // Set initial position of dogs
-    Dog0->position.x = 55;
-    Dog0->position.y = 55;
-    Dog1->position.x = 1200;
-    Dog1->position.y = 670;
-    Dog2->position.x = 520;
-    Dog2->position.y = 236;
-    Dog3->position.x = 790;
-    Dog3->position.y = 600;
-    Dog4->position.x = 892;
-    Dog4->position.y = 410;
-    Dog5->position.x = 219;
-    Dog5->position.y = 600;
-    Dog6->position.x = 650;
-    Dog6->position.y = 350;
-    Dog7->position.x = 780;
-    Dog7->position.y = 350;
-    Dog8->position.x = 200;
-    Dog8->position.y = 200;
-    Dog9->position.x = 190;
-    Dog9->position.y = 45;
+    Dog0->position.x = 208;
+    Dog0->position.y = 221;
+    Dog1->position.x = 252;
+    Dog1->position.y = 418;
+    Dog2->position.x = 473;
+    Dog2->position.y = 320;
+    Dog3->position.x = 679;
+    Dog3->position.y = 366;
+    Dog4->position.x = 894;
+    Dog4->position.y = 214;
+    Dog5->position.x = 1090;
+    Dog5->position.y = 374;
+    Dog6->position.x = 480;
+    Dog6->position.y = 203;
+    Dog7->position.x = 119;
+    Dog7->position.y = 564;
+    Dog8->position.x = 47;
+    Dog8->position.y = 314;
+    Dog9->position.x = 936;
+    Dog9->position.y = 379;
 
     // Dimensions of dog
     SDL_QueryTexture(Dog0->texture, NULL, NULL, &Dog0->position.w, &Dog0->position.h);
@@ -485,6 +488,11 @@ bool WanderIIT::loadmedia()
     SDL_QueryTexture(Prof3->texture, NULL, NULL, &Prof3->position.w, &Prof3->position.h);
     SDL_QueryTexture(Prof4->texture, NULL, NULL, &Prof4->position.w, &Prof4->position.h);
 
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        cout << "Error at OpenAudio : " << Mix_GetError() << endl;
+    }
+
     Music = Mix_LoadMUS( "Resources/Music.wav" );
     if( Music == NULL )
     {
@@ -493,25 +501,28 @@ bool WanderIIT::loadmedia()
         return false;
     }
     
+    Mix_VolumeMusic(MIX_MAX_VOLUME/4);
+    Mix_PlayMusic(Music, -1);
+    
     //Load sound effects
-    Dog_collison = Mix_LoadWAV( "Resources/Dog.wav" );
-    if( Dog_collison == NULL )
+    DogCollide = Mix_LoadWAV( "Resources/DogCollide.wav" );
+    if( DogCollide == NULL )
     {
-        printf( "Failed to load Dog_collison sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf( "Failed to load DogCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         isRunning = false;
         return false;
     }
-    Prof_collison = Mix_LoadWAV( "Resources/Prof.wav" );
-    if( Prof_collison == NULL )
+    ProfCollide = Mix_LoadWAV( "Resources/ProfCollide.wav" );
+    if( ProfCollide == NULL )
     {
-        printf( "Failed to load Prof_collison sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf( "Failed to load ProfCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         isRunning = false;
         return false;
     }
-    Wall = Mix_LoadWAV( "Resources/Wall.wav" );
-    if( Wall == NULL )
+    KeyCorrect = Mix_LoadWAV( "Resources/KeyCorrect.wav" );
+    if( KeyCorrect == NULL )
     {
-        printf( "Failed to load Wall sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf( "Failed to load KeyCorrect sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         isRunning = false;
         return false;
     }
@@ -628,7 +639,6 @@ void WanderIIT::render()
     Player1->position.h = object_height;
     SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
 
-/*
     for (int i = 0; i < players.size(); i++)
     {
         players[i]->surface = SDL_LoadBMP("Resources/Player2.bmp");
@@ -639,9 +649,8 @@ void WanderIIT::render()
             isRunning = false;
         }
         SDL_RenderCopy(renderer, players[i]->texture, NULL, &players[i]->position);
-        cout << "Player " << i+2 << " rendered!" << endl;
     }
-*/
+
     // Update position of Dogs on the screen
     SDL_RenderCopy(renderer, Dog0->texture, NULL, &Dog0->position);
     SDL_RenderCopy(renderer, Dog1->texture, NULL, &Dog1->position);
@@ -669,6 +678,10 @@ void WanderIIT::collison()
 {
     if (Player1->position.x - Start.x < Start.w && Start.x - Player1->position.x < Start.w && Player1->position.y - Start.y < Start.h && Start.y - Player1->position.y < Start.h)
     {
+        if (Key_Reverse == -1)
+        {
+            Mix_PlayChannel( -1, KeyCorrect, 0 );
+        }
         Key_Reverse = 1;
     }
 
@@ -683,7 +696,7 @@ void WanderIIT::collison()
         (Player1->position.x - Dog8->position.x < 4 && Dog8->position.x - Player1->position.x < 4 && Player1->position.y - Dog8->position.y < 4 && Dog8->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Dog9->position.x < 4 && Dog9->position.x - Player1->position.x < 4 && Player1->position.y - Dog9->position.y < 4 && Dog9->position.y - Player1->position.y < 4))
     {
-        Mix_PlayChannel( -1, Dog_collison, 0 );
+        Mix_PlayChannel( -1, DogCollide, 0 );
         Player1->position.x = 476;
         Player1->position.y = 316;
     }
@@ -694,7 +707,7 @@ void WanderIIT::collison()
         (Player1->position.x - Prof3->position.x < 4 && Prof3->position.x - Player1->position.x < 4 && Player1->position.y - Prof3->position.y < 4 && Prof3->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Prof4->position.x < 4 && Prof4->position.x - Player1->position.x < 4 && Player1->position.y - Prof4->position.y < 4 && Prof4->position.y - Player1->position.y < 4))
     {
-        Mix_PlayChannel( -1, Prof_collison, 0 );
+        Mix_PlayChannel( -1, ProfCollide, 0 );
         Key_Reverse = -1;
     }
 }
@@ -710,13 +723,13 @@ void WanderIIT::clean()
     ScreenSurface = NULL;
 
      //Free the sound effects
-    Mix_FreeChunk( Dog_collison );
-    Mix_FreeChunk( Prof_collison );
-    Mix_FreeChunk( Wall );
+    Mix_FreeChunk( DogCollide );
+    Mix_FreeChunk( ProfCollide );
+    Mix_FreeChunk( KeyCorrect );
     Mix_FreeChunk( Finish );
-    Dog_collison = NULL;
-    Prof_collison = NULL;
-    Wall = NULL;
+    DogCollide = NULL;
+    ProfCollide = NULL;
+    KeyCorrect = NULL;
     Finish = NULL;
     
     //Free the music

@@ -12,8 +12,8 @@ int main ( int args, const char* argv[])
 
     while (game->running()) {
         game->handleEvents();
-        game->collison();
         game->update();
+        game->collison();
         game->render();
     }
 

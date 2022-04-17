@@ -36,6 +36,7 @@ int main()
             case 0xffb600df : fout << "22, "; break; //Aravali
             case 0xff2400dd : fout << "23, "; break; //Karakoram
             case 0xff3ab79f : fout << "24, "; break; //Nilgiri
+            case 0xff585858 : fout << "25, "; break; //Outer Boundary of IIT Delhi
             default : fout << "0, "; break; //White
         }
     }
@@ -64,6 +65,7 @@ int main()
         case 0xffb600df : fout << "22"; break; //Aravali
         case 0xff2400dd : fout << "23"; break; //Karakoram
         case 0xff3ab79f : fout << "24"; break; //Nilgiri
+        case 0xff585858 : fout << "25"; break; //Outer Boundary of IIT Delhi
         default : fout << "0"; break; //White
     }
     fout << "\n};";

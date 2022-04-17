@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         std::cout << "Could not load font" << std::endl;
         exit(1);
     }
-    SDL_Surface *surfaceText = TTF_RenderText_Blended_Wrapped(ourFont, "Instructions \n nomber 1", {255, 255, 255}, 300);
+    SDL_Surface *surfaceText = TTF_RenderText_Blended_Wrapped(ourFont, "Instructions \n number 1", {255, 255, 255}, 300);
     SDL_Texture *textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
     SDL_Rect rectangle;

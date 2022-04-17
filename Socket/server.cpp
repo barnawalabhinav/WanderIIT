@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <vector>
 
@@ -20,7 +21,7 @@ struct data
 
 int main(int argc, char **argv)
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
     SDLNet_Init();
 
     // Identifier of players in the order they join
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
     IPaddress ip;
 
     // NULL indicates that this is a server
-    SDLNet_ResolveHost(&ip, NULL, 1234);
+    SDLNet_ResolveHost(&ip, NULL, 8080);
 
     vector<data> socketvector;
 
@@ -54,6 +55,8 @@ int main(int argc, char **argv)
     TCPsocket server = SDLNet_TCP_Open(&ip);
 
     char curr_tmp1[1400];
+
+    //if(server){	if ((csd = SDLNet_TCP_Accept(sd)))	{			if ((remoteIP = SDLNet_TCP_GetPeerAddress(csd)))			printf("Host connected: %x %d\n", SDLNet_Read32(&remoteIP->host), SDLNet_Read16(&remoteIP->port));		else			fprintf(stderr, "SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());				// Change the "if" to a "while" loop			while (SDLNet_TCP_Recv(csd, buffer, 512) > 0)		{			printf("Client say: %s\n", buffer);		}		printf("Host disconnected\n");	}}
 
     while (running)
     {
@@ -185,7 +188,8 @@ int main(int argc, char **argv)
     //Close the server
     SDLNet_TCP_Close(server);
         
-    //Exit 
+    //Exit
+    Mix_Quit();
     SDLNet_Quit();
     SDL_Quit();
 }

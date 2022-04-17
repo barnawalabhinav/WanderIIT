@@ -41,6 +41,9 @@ public:
     SDL_Rect Karakoram;
     SDL_Rect Nilgiri;
 
+    //Finish Point
+    SDL_Rect FinishPoint;
+
     // The surface contained by the window
     SDL_Surface *ScreenSurface = NULL;
     SDL_Texture *ScreenTexture = NULL;
@@ -49,9 +52,9 @@ public:
     Mix_Music *Music = NULL;
 
     // The sound effects that will be used
-    Mix_Chunk *Dog_collison = NULL;
-    Mix_Chunk *Prof_collison = NULL;
-    Mix_Chunk *Wall = NULL;
+    Mix_Chunk *KeyCorrect = NULL;
+    Mix_Chunk *DogCollide = NULL;
+    Mix_Chunk *ProfCollide = NULL;
     Mix_Chunk *Finish = NULL;
 
     bool isOnline;

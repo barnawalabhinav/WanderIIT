@@ -4,7 +4,7 @@ network::network(const char *ipchar)
 {
     SDLNet_Init();
     IPaddress ip;
-    if (SDLNet_ResolveHost(&ip, ipchar, 1234) == -1)
+    if (SDLNet_ResolveHost(&ip, ipchar, 8080) == -1)
         cout << "Error Encountered while connecting to server!" << endl;
     connection = SDLNet_TCP_Open(&ip);
     if (connection == NULL)
@@ -69,14 +69,17 @@ void network::recv(vector<Player *> &players, Player *p)
         }
         else if (type == 1)
         {
-            int i = 0;
+            int i = 0, x, y, w, h;
             for (i = 0; i < players.size(); i++)
             {
                 if (players[i]->id == id)
                 {
                     int tmp2;
-                    sscanf(tmp, "1 %d %d %d %d %d \n", &tmp2, players[i]->position.x, players[i]->position.y, players[i]->position.w, players[i]->position.h);
-                    cout << "Player " << id + 1 << "is at (" << (players[i]->position.x) << ", " << (players[i]->position.y) << ")" << endl;
+                    sscanf(tmp, "1 %d %d %d %d %d \n", &tmp2, &x, &y, &w, &h);
+                    players[i]->position.x = x;
+                    players[i]->position.y = y;
+                    players[i]->position.w = w;
+                    players[i]->position.h = h;
                     break;
                 }
             }
@@ -85,7 +88,11 @@ void network::recv(vector<Player *> &players, Player *p)
                 int tmp2;
                 Player *p_new = new Player();
                 p_new->setId(id);
-                sscanf(tmp, "1 %d %d %d %d %d \n", &tmp2, p_new->position.x, p_new->position.y, p_new->position.w, p_new->position.h);
+                sscanf(tmp, "1 %d %d %d %d %d \n", &tmp2, &x, &y, &w, &h);
+                p_new->position.x = x;
+                p_new->position.y = y;
+                p_new->position.w = w;
+                p_new->position.h = h;
                 players.push_back(p_new);
             }
         }
