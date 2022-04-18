@@ -1,4 +1,4 @@
-#include "WanderIIT.hpp"
+#include "WanderIIT.h"
 //#include "glad/glad.h"
 
 // Constructor
@@ -9,10 +9,9 @@ WanderIIT::WanderIIT()
 
     if(isOnline)
     {
-        //127.0.0.1
-        cout << "Please enter your ip address : ";
+        cout << "Please enter server ip address : ";
         cin.getline(ip, 20);
-        net = new network(ip);
+        Myclient->setupConnection(ip);
     }
 
     Himadri.x = 949;
@@ -25,40 +24,40 @@ WanderIIT::WanderIIT()
     Kailash.w = 4;
     Kailash.h = 6;
 
-    LHC.x = 781;
-    LHC.y = 329;
-    LHC.w = 4;
-    LHC.h = 4;
+    LHC.x = 774;
+    LHC.y = 325;
+    LHC.w = 10;
+    LHC.h = 8;
 
-    Main_Building.x = 728;
-    Main_Building.y = 246;
-    Main_Building.w = 4;
-    Main_Building.h = 4;
+    Main_Building.x = 727;
+    Main_Building.y = 243;
+    Main_Building.w = 8;
+    Main_Building.h = 8;
 
-    Library.x = 681;
-    Library.y = 298;
-    Library.w = 4;
-    Library.h = 4;
+    Library.x = 679;
+    Library.y = 294;
+    Library.w = 8;
+    Library.h = 8;
 
-    Amul.x = 654;
-    Amul.y = 290;
-    Amul.w = 4;
-    Amul.h = 4;
+    Amul.x = 651;
+    Amul.y = 287;
+    Amul.w = 6;
+    Amul.h = 6;
 
     Bharti_School.x = 606;
     Bharti_School.y = 315;
     Bharti_School.w = 4;
     Bharti_School.h = 4;
 
-    Ground.x = 589;
+    Ground.x = 585;
     Ground.y = 355;
-    Ground.w = 4;
-    Ground.h = 4;
+    Ground.w = 7;
+    Ground.h = 3;
 
-    Girnar.x = 443;
-    Girnar.y = 205;
-    Girnar.w = 3;
-    Girnar.h = 4;
+    Girnar.x = 440;
+    Girnar.y = 202;
+    Girnar.w = 4;
+    Girnar.h = 7;
 
     Hospital.x = 474;
     Hospital.y = 315;
@@ -133,10 +132,13 @@ WanderIIT::WanderIIT()
 // Deconstructor
 WanderIIT::~WanderIIT()
 {
-    delete net;
+    delete Myclient;
 }
 
 Player *Player1 = nullptr;
+Player *Player2 = nullptr;
+buttons *object_buttons = nullptr;
+instructions *object_instructions = nullptr;
 
 Dog *Dog0 = nullptr;
 Dog *Dog1 = nullptr;
@@ -155,78 +157,31 @@ Prof *Prof2 = nullptr;
 Prof *Prof3 = nullptr;
 Prof *Prof4 = nullptr;
 
-bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int Start_Xpos, int Start_Ypos)
+bool WanderIIT::SameHostel(SDL_Rect Space, SDL_Rect Hostel)
 {
-    // First display the instruction window
-    SDL_Window *Instrwindow = nullptr;
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cout << "SDL could not be initialized: " << SDL_GetError();
-    }
+    if (Space.x == Hostel.x && Space.y == Hostel.y && Space.w == Hostel.w && Space.h == Hostel.h)
+        return true;
     else
-    {
-        std::cout << "SDL video system is ready to go\n";
-    }
-    Instrwindow = SDL_CreateWindow("C++ SDL2 Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1354, 687, SDL_WINDOW_SHOWN);
+        return false;
+}
 
-    SDL_Renderer *Instrrenderer = nullptr;
-    Instrrenderer = SDL_CreateRenderer(Instrwindow, -1, SDL_RENDERER_ACCELERATED);
-    if (TTF_Init() == -1)
-    {
-        std::cout << "Could not initailize SDL2_ttf, error: " << TTF_GetError() << std::endl;
-    }
+bool WanderIIT::WithinRegion(SDL_Rect Position, SDL_Rect Area)
+{
+    if (Position.x - Area.x < Area.w && Area.x - Position.x < Area.w && Position.y - Area.y < Area.h && Area.y - Position.y < Area.h)
+        return true;
     else
-    {
-        std::cout << "SDL2_ttf system ready to go!" << std::endl;
-    }
-    TTF_Font *ourFont = TTF_OpenFont("./fonts/8bitOperatorPlus8-Regular.ttf", 32);
-    if (ourFont == nullptr)
-    {
-        std::cout << "Could not load font" << std::endl;
-        exit(1);
-    }
+        return false;
+}
 
-    SDL_Surface *surfaceText = TTF_RenderText_Blended_Wrapped(ourFont, "            * Welcome to Wander IIT! *\n* Here you have to reach your destination starting from your hostel while surpassing various hurdles! \n * Use the arraow keys to move only on the roads, though you may move diagonally using two keys together (Left+Up will take you towards North-West) \n * Encountering a dog injurs you and the very helpful community of IIT Delhi drops you at the hospital! \n * On encountering an angry Professor, you lose your mental balance and start walking insanely (your key movements reverse)! Go to your hostel to rejuvenate yourself!", {255, 255, 255}, 687);
-    SDL_Texture *textureText = SDL_CreateTextureFromSurface(Instrrenderer, surfaceText);
-    SDL_FreeSurface(surfaceText);
-    SDL_Rect rectangle;
-    rectangle.x = 20;
-    rectangle.y = 20;
-    rectangle.w = 1318;
-    rectangle.h = 100;
-    bool InstrRunning = true;
-    while (InstrRunning)
-    {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                InstrRunning = false;
-            }
-        }
-        SDL_SetRenderDrawColor(Instrrenderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(Instrrenderer);
-        SDL_RenderCopy(Instrrenderer, textureText, NULL, &rectangle);
-        SDL_RenderPresent(Instrrenderer);
-
-        SDL_Delay(3000);
-        InstrRunning = false;
-    }
-
-    SDL_DestroyTexture(textureText);
-    SDL_DestroyWindow(Instrwindow);
-    TTF_CloseFont(ourFont);
-
-    // Next display the game window
-
-    Start.x = Start_Xpos;
-    Start.y = Start_Ypos;
-
+bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height)
+{
     Player1 = new Player();
+    Player2 = new Player();
+    Player1->GirlsHostelVisited.x = 0;
+    Player1->GirlsHostelVisited.y = 0;
+    Player1->GirlsHostelVisited.w = 0;
+    Player1->GirlsHostelVisited.h = 0;
 
-    Player1->position.x = Start_Xpos;
-    Player1->position.y = Start_Ypos;
     map_pos.x = 0;
     map_pos.y = 0;
 
@@ -251,14 +206,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         printf("SDL could not initialize! SDL_ERROR: %s\n", SDL_GetError());
-        isRunning = false;
-        return false;
-    }
-
-    // Initialize SDL_mixer
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-    {
-        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
@@ -305,6 +252,67 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     }
 
     printf("Renderer Created!\n");
+
+    //Display Instructions
+    object_instructions = new instructions();
+    object_instructions->instructions_window(window, renderer);
+
+    SDL_Delay(2);
+
+    //Display Buttons
+	object_buttons = new buttons();
+	int hostel = object_buttons->buttons_window(window, renderer);
+
+    //We take this input from User
+    switch (hostel)
+    {
+    case 1:
+        Start = Satpura;
+        break;
+    case 2:
+        Start = Girnar;
+        break;
+    case 3:
+        Start = Udaigiri;
+        break;
+    case 4:
+        Start = Karakoram;
+        break;
+    case 5:
+        Start = Nilgiri;
+        break;
+    case 6:
+        Start = Aravali;
+        break;
+    case 7:
+        Start = Kumaon;
+        break;
+    case 8:
+        Start = Himadri;
+        break;
+    case 9:
+        Start = Kailash;
+        break;
+    case 10:
+        Start = Vindhyachal;
+        break;
+    case 11:
+        Start = Zanskar;
+        break;
+    case 12:
+        Start = Shivalik;
+        break;
+    case 13:
+        Start = Jwala;
+        break;
+    default:
+        break;
+    }
+
+    FinishPoint = LHC;
+
+    Player1->position.x = Start.x;
+    Player1->position.y = Start.y;
 
     ScreenSurface = SDL_LoadBMP("Resources/map_label.bmp");
     ScreenTexture = SDL_CreateTextureFromSurface(renderer, ScreenSurface);
@@ -380,6 +388,16 @@ bool WanderIIT::loadmedia()
         return false;
     }
     SDL_QueryTexture(Player1->texture, NULL, NULL, &Player1->position.w, &Player1->position.h);
+
+    Player2->surface = SDL_LoadBMP("Resources/Player2.bmp");
+    Player2->texture = SDL_CreateTextureFromSurface(renderer, Player2->surface);
+    if (Player2->surface == NULL)
+    {
+        printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        isRunning = false;
+        return false;
+    }
+    SDL_QueryTexture(Player2->texture, NULL, NULL, &Player2->position.w, &Player2->position.h);
 
     // Load Dogs
     Dog0->surface = SDL_LoadBMP("Resources/Dog.bmp");
@@ -526,6 +544,13 @@ bool WanderIIT::loadmedia()
         isRunning = false;
         return false;
     }
+    Milestone = Mix_LoadWAV( "Resources/Milestone.wav" );
+    if( Milestone == NULL )
+    {
+        printf( "Failed to load Milestone sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        isRunning = false;
+        return false;
+    }
     Finish = Mix_LoadWAV( "Resources/Finish.wav" );
     if( Finish == NULL )
     {
@@ -574,7 +599,11 @@ void WanderIIT::handleEvents()
     Prof3->move(curr_win_width, curr_win_height, map_pos, 54);
     Prof4->move(curr_win_width, curr_win_height, map_pos, 213);
 
-    /*
+    SDL_Event event;
+    
+    // Starting Event Loop
+    SDL_PollEvent(&event);
+
     //Capture Mouse Here
         int x, y;
         Uint32 buttons = SDL_GetMouseState(&x, &y);
@@ -584,12 +613,6 @@ void WanderIIT::handleEvents()
         if( event.button.button == SDL_BUTTON_RIGHT ) {
             SetPixel(ScreenSurface, x, y, 255, 0, 255);
         }
-    */
-
-    SDL_Event event;
-    
-    // Starting Event Loop
-    SDL_PollEvent(&event);
 
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -601,7 +624,7 @@ void WanderIIT::handleEvents()
     else if (event.type == SDL_QUIT)
     {
         isRunning = false;
-        net->quit(Player1);
+        Player1->quit = 1;
     }
     else
     {
@@ -618,8 +641,8 @@ void WanderIIT::update()
     // Update the surface
     if(isOnline)
     {
-        net->send(Player1);
-        net->recv(players, Player1);
+        Myclient->sendData(Player1);
+        Myclient->recvData(Player2);
     }
 }
 
@@ -676,7 +699,21 @@ void WanderIIT::render()
 
 void WanderIIT::collison()
 {
-    if (Player1->position.x - Start.x < Start.w && Start.x - Player1->position.x < Start.w && Player1->position.y - Start.y < Start.h && Start.y - Player1->position.y < Start.h)
+    //Check collison with Finish Point
+    if (WithinRegion(Player1->position, FinishPoint))
+    {
+        if (Player1->CompletedMilestones == MAX_MILESTONES)
+        {
+            Player1->GameWon = 1;
+                            
+            //Render the Won Screen
+
+            isRunning = false;
+        }
+    }
+
+    //Check collison with own hostel
+    if (WithinRegion(Player1->position, Start))
     {
         if (Key_Reverse == -1)
         {
@@ -684,8 +721,226 @@ void WanderIIT::collison()
         }
         Key_Reverse = 1;
     }
+    //If the collided hostel is not own hostel, check for all hostels.
+    else if (WithinRegion(Player1->position, Himadri))
+    {
+        if (!SameHostel(Player1->GirlsHostelVisited, Himadri) && !SameHostel(Player1->GirlsHostelVisited, Kailash))
+        {
+            Player1->CompletedMilestones++;
+            Player1->GirlsHostelVisited = Himadri;
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Kailash))
+    {
+        if (!SameHostel(Player1->GirlsHostelVisited, Himadri) && !SameHostel(Player1->GirlsHostelVisited, Kailash))
+        {
+            Player1->CompletedMilestones++;
+            Player1->GirlsHostelVisited = Kailash;
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Girnar))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Girnar))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Girnar);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Satpura))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Satpura))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Satpura);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Jwala))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Jwala))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Jwala);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Aravali))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Aravali))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Aravali);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Kumaon))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Kumaon))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Kumaon);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Karakoram))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Karakoram))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Karakoram);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Zanskar))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Zanskar))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Zanskar);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Vindhyachal))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Vindhyachal))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Vindhyachal);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Shivalik))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Shivalik))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Shivalik);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Udaigiri))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Udaigiri))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Udaigiri);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
+    else if (WithinRegion(Player1->position, Nilgiri))
+    {
+        bool visited = false;
+        for (int i = 0; i < Player1->BoysHostelsVisited.size(); i++)
+        {
+            if (SameHostel(Player1->BoysHostelsVisited[i], Nilgiri))
+            {
+                visited = true;
+                break;
+            }
+        }
+        if (!visited && Player1->BoysHostelsVisited.size() < (MAX_MILESTONES - 1))
+        {
+            Player1->CompletedMilestones++;
+            Player1->BoysHostelsVisited.push_back(Nilgiri);
+            Mix_PlayChannel( -1, Milestone, 0 );
+        }
+    }
 
-    if ((Player1->position.x - Dog0->position.x < 4 && Dog0->position.x - Player1->position.x < 4 && Player1->position.y - Dog0->position.y < 4 && Dog0->position.y - Player1->position.y < 4) ||
+    //Check Collison with a dog
+    else if ((Player1->position.x - Dog0->position.x < 4 && Dog0->position.x - Player1->position.x < 4 && Player1->position.y - Dog0->position.y < 4 && Dog0->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Dog1->position.x < 4 && Dog1->position.x - Player1->position.x < 4 && Player1->position.y - Dog1->position.y < 4 && Dog1->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Dog2->position.x < 4 && Dog2->position.x - Player1->position.x < 4 && Player1->position.y - Dog2->position.y < 4 && Dog2->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Dog3->position.x < 4 && Dog3->position.x - Player1->position.x < 4 && Player1->position.y - Dog3->position.y < 4 && Dog3->position.y - Player1->position.y < 4) ||
@@ -701,7 +956,8 @@ void WanderIIT::collison()
         Player1->position.y = 316;
     }
 
-    if ((Player1->position.x - Prof0->position.x < 4 && Prof0->position.x - Player1->position.x < 4 && Player1->position.y - Prof0->position.y < 4 && Prof0->position.y - Player1->position.y < 4) ||
+    //Check collison with a Prof
+    else if ((Player1->position.x - Prof0->position.x < 4 && Prof0->position.x - Player1->position.x < 4 && Player1->position.y - Prof0->position.y < 4 && Prof0->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Prof1->position.x < 4 && Prof1->position.x - Player1->position.x < 4 && Player1->position.y - Prof1->position.y < 4 && Prof1->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Prof2->position.x < 4 && Prof2->position.x - Player1->position.x < 4 && Player1->position.y - Prof2->position.y < 4 && Prof2->position.y - Player1->position.y < 4) ||
         (Player1->position.x - Prof3->position.x < 4 && Prof3->position.x - Player1->position.x < 4 && Player1->position.y - Prof3->position.y < 4 && Prof3->position.y - Player1->position.y < 4) ||
@@ -726,10 +982,12 @@ void WanderIIT::clean()
     Mix_FreeChunk( DogCollide );
     Mix_FreeChunk( ProfCollide );
     Mix_FreeChunk( KeyCorrect );
+    Mix_FreeChunk( Milestone );
     Mix_FreeChunk( Finish );
     DogCollide = NULL;
     ProfCollide = NULL;
     KeyCorrect = NULL;
+    Milestone = NULL;
     Finish = NULL;
     
     //Free the music

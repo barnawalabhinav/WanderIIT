@@ -1,3 +1,0 @@
-WE need to change the instructions and need to download sdl_tff library
-code: sudo apt-get install libsdl2-ttf-dev
-Also write this main1.c file part before the game initilization i.e. before the main while loop also add a delay of 10 seconds.

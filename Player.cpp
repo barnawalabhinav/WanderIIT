@@ -1,8 +1,11 @@
-#include "Player.hpp"
+#include "Player.h"
 
 Player::Player()
 {
     id = -1;
+    CompletedMilestones = 0;
+    GameWon = 0;
+    quit = 0;
 }
 
 Player::~Player()

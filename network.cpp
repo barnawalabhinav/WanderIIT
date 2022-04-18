@@ -1,10 +1,10 @@
-#include "network.hpp"
+#include "network.h"
 
 network::network(const char *ipchar)
 {
     SDLNet_Init();
     IPaddress ip;
-    if (SDLNet_ResolveHost(&ip, ipchar, 8080) == -1)
+    if (SDLNet_ResolveHost(&ip, ipchar, 1234) < 0)
         cout << "Error Encountered while connecting to server!" << endl;
     connection = SDLNet_TCP_Open(&ip);
     if (connection == NULL)
@@ -60,7 +60,7 @@ void network::recv(vector<Player *> &players, Player *p)
                 return;
         } while (tmp[strlen(tmp) - 1] != '\n');
 
-        int type, id;
+        int type = -1, id = -1;
         sscanf(tmp, "%d %d", &type, &id);
         if (type == 0)
         {

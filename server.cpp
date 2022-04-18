@@ -2,7 +2,7 @@
 // programming
 #include "server.h"
 
-int chartoint(char ch){
+int server::chartoint(char ch){
     int x = ch - '0';
     return x;
 }
@@ -95,7 +95,6 @@ char* server::sendData(Player *p)
 	}
 
 	string sending_data = string_of_x + "_" + string_of_y + "_" + to_string(p->position.w) + "_" + to_string(p->position.h) + "_" + to_string(p->GameWon) +  "_" + to_string(p->quit) +  "_" + to_string(p->CompletedMilestones);
-	int n = sending_data.length();
 	strcpy(message, sending_data.c_str());
 	int size = send(new_socket, &message, strlen(message), 0);
 
@@ -110,7 +109,7 @@ void server::recvData(Player *p)
 	valread = read(new_socket, buffer, 1024);
 	extract_data(buffer, p->position.x, p->position.y, p->position.w, p->position.h, p->GameWon, p->quit, p->CompletedMilestones);
 }
-
+/*
 int main(){
 	server *head = nullptr;
 	head = new server();
@@ -131,3 +130,4 @@ int main(){
 	head->recvData(newplayer_2);
 	printf("%s\n", head->buffer);
 }
+*/

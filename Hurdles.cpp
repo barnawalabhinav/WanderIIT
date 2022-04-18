@@ -1,4 +1,4 @@
-#include "Hurdles.hpp"
+#include "Hurdles.h"
 
 // Dog Constructor
 Dog::Dog() {}

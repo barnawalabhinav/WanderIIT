@@ -1,11 +1,7 @@
 // Client side C/C++ program to demonstrate Socket
 // programming
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include "client.h"
+
 #define PORT 8080
 
 int client::chartoint(char ch)
@@ -17,7 +13,6 @@ int client::chartoint(char ch)
 int client::setupConnection(const char *IPaddr)
 {
 	struct sockaddr_in serv_addr;
-	char buffer[1024] = {0};
 	if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		printf("\n Socket creation error \n");
@@ -95,7 +90,6 @@ char *client::sendData(Player *p)
 	}
 
 	string sending_data = string_of_x + "_" + string_of_y + "_" + to_string(p->position.w) + "_" + to_string(p->position.h) + "_" + to_string(p->GameWon) + "_" + to_string(p->quit) + "_" + to_string(p->CompletedMilestones);
-	int n = sending_data.length();
 	strcpy(message, sending_data.c_str());
 	int size = send(client_fd, &message, strlen(message), 0);
 
