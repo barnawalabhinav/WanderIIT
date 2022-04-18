@@ -2,6 +2,11 @@
 // programming
 #include "server.h"
 
+int chartoint(char ch){
+    int x = ch - '0';
+    return x;
+}
+
 int server::setupConnection()
 {
 	struct sockaddr_in address;
@@ -50,63 +55,80 @@ int server::setupConnection()
 
 void server::extract_data(char data[], int x, int y, int w, int h, int won, int quit, int miles)
 {
-	int j = 0, k = 0;
-	char *temp_char;
-	string temp_str = "";
-	for (int i = 0; i < sizeof(data); i++)
-	{
-		if(data[i] = '_')
-		{
-			temp_str = temp_char;
-			stringstream temp(temp_str);
-			switch (j)
-			{
-			case 0:
-				temp >> x;
-				break;
-			case 1:
-				temp >> y;
-				break;
-			case 2:
-				temp >> w;
-				break;
-			case 3:
-				temp >> h;
-				break;
-			case 4:
-				temp >> won;
-				break;
-			case 5:
-				temp >> quit;
-				break;
-			case 6:
-				temp >> miles;
-				break;
-			default:
-				break;
-			}
-			j++;
-			k = i;
-		}
-		else{
-			temp_char[i-k] = data[i];
-		}
-	}
+	x = 1000*chartoint(data[0])+ 100*chartoint(data[1])+10*chartoint(data[2])+chartoint(data[3]);
+	y = 1000*chartoint(data[5])+ 100*chartoint(data[6])+10*chartoint(data[7])+chartoint(data[8]);
+	w = chartoint(data[10]);
+	h = chartoint(data[12]);
+	won = chartoint(data[14]);
+	quit = chartoint(data[16]);
+	miles = chartoint(data[18]);
 }
 
-void server::sendData(Player *p)
+char* server::sendData(Player *p)
 {
-	string str = to_string(p->position.x) + "_" + to_string(p->position.y) + "_" + to_string(p->position.w) + "_" + to_string(p->position.h) + "_" + to_string(p->GameWon) + "_" + to_string(p->quit) + "_" + to_string(p->CompletedMilestones);
-	strcpy(message, str.c_str());
-	int size = send(new_socket, message, strlen(message), 0);
-
-	if(size < 0)
-	{
-		printf("Could not send data to the client");
+	string string_of_x; 
+	string string_of_y;
+	if(p->position.x<10){
+		string_of_x = ("0" + ("0" + ("0" + to_string(p->position.x))));
 	}
+	else if(p->position.x<100){
+		 string_of_x = ("0" + ("0" + to_string(p->position.x)));
+	}
+	else if(p->position.x<1000){
+		 string_of_x = ("0" + to_string(p->position.x));
+	}
+	else if(p->position.x<10000){
+		 string_of_x = to_string(p->position.x);
+	}
+
+	if(p->position.y<10){
+		 string_of_y = ("0" + ("0" + ("0" + to_string(p->position.y))));
+	}
+	else if(p->position.y<100){
+		 string_of_y = ("0" + ("0" + to_string(p->position.y)));
+	}
+	else if(p->position.y<1000){
+		 string_of_y = "0" + to_string(p->position.y);
+	}
+	else if(p->position.y<10000){
+		string_of_y = to_string(p->position.y);
+	}
+
+	string sending_data = string_of_x + "_" + string_of_y + "_" + to_string(p->position.w) + "_" + to_string(p->position.h) + "_" + to_string(p->GameWon) +  "_" + to_string(p->quit) +  "_" + to_string(p->CompletedMilestones);
+	int n = sending_data.length();
+	strcpy(message, sending_data.c_str());
+	int size = send(new_socket, &message, strlen(message), 0);
+
+	if(size<0){
+		printf("error size < 0");
+	}
+	return message;
 }
 
 void server::recvData(Player *p)
 {
 	valread = read(new_socket, buffer, 1024);
+	extract_data(buffer, p->position.x, p->position.y, p->position.w, p->position.h, p->GameWon, p->quit, p->CompletedMilestones);
+}
+
+int main(){
+	server *head = nullptr;
+	head = new server();
+	Player *newplayer_1 = nullptr;
+	newplayer_1 = new Player();
+	newplayer_1->position.x=0;
+	newplayer_1->position.y=1;
+	newplayer_1->position.w=2;
+	newplayer_1->position.h=3;
+	newplayer_1->GameWon=4;
+	newplayer_1->quit=5;
+	newplayer_1->CompletedMilestones=6;
+	head->setupConnection();
+	string new_string = head->sendData(newplayer_1);
+	cout << new_string << endl;
+	Player *newplayer_2 = nullptr;
+	newplayer_2 = new Player();
+	head->recvData(newplayer_2);
+	printf("%s\n", head->buffer);
+
 }
