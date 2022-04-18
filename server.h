@@ -23,5 +23,5 @@ class server
     int setupConnection();
     void sendData(Player *p);
     void recvData(Player *p);
-    void server::extract_data(char data[], int x, int y, int w, int h, int won, int quit, int miles);
+    void server::extract_data(char data[], int &x, int &y, int &w, int &h, int &won, int &quit, int &miles);
 };
