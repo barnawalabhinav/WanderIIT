@@ -4,6 +4,12 @@
 
 #define PORT 8080
 
+client::client()
+{}
+
+client::~client()
+{}
+
 int client::chartoint(char ch)
 {
 	int x = ch - '0';

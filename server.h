@@ -15,6 +15,9 @@ using namespace std;
 class server
 {
 public:
+    server();
+    ~server();
+
     int server_fd, new_socket, valread;
     char message[20];
     char buffer[1024] = {0};

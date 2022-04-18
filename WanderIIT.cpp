@@ -5,14 +5,6 @@
 WanderIIT::WanderIIT()
 {
     isOnline = true;
-    char ip[20];
-
-    if(isOnline)
-    {
-        cout << "Please enter server ip address : ";
-        cin.getline(ip, 20);
-        Myclient->setupConnection(ip);
-    }
 
     Himadri.x = 949;
     Himadri.y = 141;
@@ -157,6 +149,18 @@ Prof *Prof2 = nullptr;
 Prof *Prof3 = nullptr;
 Prof *Prof4 = nullptr;
 
+string WanderIIT::stringFromCharList (char *chrl) //generate string from list of characters
+{
+    string str = "";
+    int i = 0;
+    while(chrl[i])
+    {
+        str+=chrl[i]; //append current character to the string generated till now
+        i++;
+    }
+    return str;
+}
+
 bool WanderIIT::SameHostel(SDL_Rect Space, SDL_Rect Hostel)
 {
     if (Space.x == Hostel.x && Space.y == Hostel.y && Space.w == Hostel.w && Space.h == Hostel.h)
@@ -173,8 +177,28 @@ bool WanderIIT::WithinRegion(SDL_Rect Position, SDL_Rect Area)
         return false;
 }
 
-bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height)
+bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int sys_type)
 {
+    Myclient = new client();
+    Myserver = new server();
+
+    //Defines whether system is client or server
+    if (sys_type == 1)
+    {
+        if(isOnline)
+        {
+            char ip[20];
+            cout << "Hi Client! Please enter server ip address : ";
+            cin.getline(ip, 20);
+            Myclient->setupConnection(ip);
+        }
+    }
+    else
+    {
+        cout << "Hi Server!" << endl;
+        Myserver->setupConnection();
+    }
+
     Player1 = new Player();
     Player2 = new Player();
     Player1->GirlsHostelVisited.x = 0;
@@ -184,6 +208,12 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
 
     map_pos.x = 0;
     map_pos.y = 0;
+
+    WinDim.x = 396;
+    WinDim.y = 280;
+
+    LoseDim.x = 397;
+    LoseDim.y = 279;
 
     Dog0 = new Dog();
     Dog1 = new Dog();
@@ -252,6 +282,22 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     }
 
     printf("Renderer Created!\n");
+
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        cout << "Error at OpenAudio : " << Mix_GetError() << endl;
+    }
+
+    Music = Mix_LoadMUS( "Resources/Music.wav" );
+    if( Music == NULL )
+    {
+        printf( "Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError() );
+        isRunning = false;
+        return false;
+    }
+    
+    Mix_VolumeMusic(MIX_MAX_VOLUME/4);
+    Mix_PlayMusic(Music, -1);
 
     //Display Instructions
     object_instructions = new instructions();
@@ -351,11 +397,11 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
 
     return true;
 }
-
+/*
 // Set the pixels colotr values at a position (x, y) to (r, g, b) arguments
 void WanderIIT::SetPixel(SDL_Surface *surface, int x, int y, uint8_t r, uint8_t g, uint8_t b)
 {
-    /* Once locked, surface->pixels is safe to access. */
+    Once locked, surface->pixels is safe to access.
     SDL_LockSurface(surface);
     uint8_t *pixelArray = (uint8_t *)surface->pixels;
     pixelArray[y * surface->pitch + x * surface->format->BytesPerPixel + 0] = g;
@@ -363,7 +409,7 @@ void WanderIIT::SetPixel(SDL_Surface *surface, int x, int y, uint8_t r, uint8_t 
     pixelArray[y * surface->pitch + x * surface->format->BytesPerPixel + 2] = r;
     SDL_UnlockSurface(surface);
 }
-
+*/
 /*
 int WanderIIT::get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int y)
 {
@@ -398,6 +444,28 @@ bool WanderIIT::loadmedia()
         return false;
     }
     SDL_QueryTexture(Player2->texture, NULL, NULL, &Player2->position.w, &Player2->position.h);
+
+    //Load win image
+    WinSurface = SDL_LoadBMP("Resources/won.bmp");
+    WinTexture = SDL_CreateTextureFromSurface(renderer, WinSurface);
+    if (WinSurface == NULL)
+    {
+        printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        isRunning = false;
+        return false;
+    }
+    SDL_QueryTexture(WinTexture, NULL, NULL, &WinDim.w, &WinDim.h);
+
+    //Load lose image
+    LoseSurface = SDL_LoadBMP("Resources/lost.bmp");
+    LoseTexture = SDL_CreateTextureFromSurface(renderer, LoseSurface);
+    if (LoseSurface == NULL)
+    {
+        printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        isRunning = false;
+        return false;
+    }
+    SDL_QueryTexture(LoseTexture, NULL, NULL, &LoseDim.w, &LoseDim.h);
 
     // Load Dogs
     Dog0->surface = SDL_LoadBMP("Resources/Dog.bmp");
@@ -505,22 +573,6 @@ bool WanderIIT::loadmedia()
     SDL_QueryTexture(Prof2->texture, NULL, NULL, &Prof2->position.w, &Prof2->position.h);
     SDL_QueryTexture(Prof3->texture, NULL, NULL, &Prof3->position.w, &Prof3->position.h);
     SDL_QueryTexture(Prof4->texture, NULL, NULL, &Prof4->position.w, &Prof4->position.h);
-
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-    {
-        cout << "Error at OpenAudio : " << Mix_GetError() << endl;
-    }
-
-    Music = Mix_LoadMUS( "Resources/Music.wav" );
-    if( Music == NULL )
-    {
-        printf( "Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError() );
-        isRunning = false;
-        return false;
-    }
-    
-    Mix_VolumeMusic(MIX_MAX_VOLUME/4);
-    Mix_PlayMusic(Music, -1);
     
     //Load sound effects
     DogCollide = Mix_LoadWAV( "Resources/DogCollide.wav" );
@@ -604,16 +656,6 @@ void WanderIIT::handleEvents()
     // Starting Event Loop
     SDL_PollEvent(&event);
 
-    //Capture Mouse Here
-        int x, y;
-        Uint32 buttons = SDL_GetMouseState(&x, &y);
-        if( event.button.button == SDL_BUTTON_LEFT ) {
-            SetPixel(ScreenSurface, x, y, 255, 0, 0);
-        }
-        if( event.button.button == SDL_BUTTON_RIGHT ) {
-            SetPixel(ScreenSurface, x, y, 255, 0, 255);
-        }
-
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
     if (state[SDL_SCANCODE_RETURN])
@@ -650,29 +692,34 @@ void WanderIIT::render()
 {
     // Clear the current rendering target with the drawing color
     SDL_RenderClear(renderer);
+    //Check for someone winning the game
+    if (Player1->GameWon == 1)
+    {
+        SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);
+
+        SDL_Delay(5000);
+
+        isRunning = false;
+    }
+    else if (Player2->GameWon == 1)
+    {
+        SDL_RenderCopy(renderer, LoseTexture, NULL, &LoseDim);
+
+        SDL_Delay(5000);
+
+        isRunning = false;
+    }
     // Get the map on the screen
     SDL_QueryTexture(ScreenTexture, NULL, NULL, &screen_width, &screen_height);
     map_pos.w = MAP_FRAME_WIDTH;
     map_pos.h = MAP_FRAME_HEIGHT;
     SDL_RenderCopy(renderer, ScreenTexture, NULL, &map_pos);
-    
-    // Get the Player1 on the screen
-    SDL_QueryTexture(Player1->texture, NULL, NULL, &object_width, &object_height);
-    Player1->position.w = object_width;
-    Player1->position.h = object_height;
-    SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
 
-    for (int i = 0; i < players.size(); i++)
-    {
-        players[i]->surface = SDL_LoadBMP("Resources/Player2.bmp");
-        players[i]->texture = SDL_CreateTextureFromSurface(renderer, players[i]->surface);
-        if (players[i]->surface == NULL)
-        {
-            printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
-            isRunning = false;
-        }
-        SDL_RenderCopy(renderer, players[i]->texture, NULL, &players[i]->position);
-    }
+    // Get the Player1 on the screen
+    SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
+    
+    // Get the Player2 on the screen
+    SDL_RenderCopy(renderer, Player2->texture, NULL, &Player2->position);
 
     // Update position of Dogs on the screen
     SDL_RenderCopy(renderer, Dog0->texture, NULL, &Dog0->position);
@@ -705,15 +752,10 @@ void WanderIIT::collison()
         if (Player1->CompletedMilestones == MAX_MILESTONES)
         {
             Player1->GameWon = 1;
-                            
-            //Render the Won Screen
-
-            isRunning = false;
         }
     }
-
     //Check collison with own hostel
-    if (WithinRegion(Player1->position, Start))
+    else if (WithinRegion(Player1->position, Start))
     {
         if (Key_Reverse == -1)
         {
@@ -721,7 +763,7 @@ void WanderIIT::collison()
         }
         Key_Reverse = 1;
     }
-    //If the collided hostel is not own hostel, check for all hostels.
+    //Check collison with other hostels
     else if (WithinRegion(Player1->position, Himadri))
     {
         if (!SameHostel(Player1->GirlsHostelVisited, Himadri) && !SameHostel(Player1->GirlsHostelVisited, Kailash))
@@ -970,9 +1012,13 @@ void WanderIIT::collison()
 
 void WanderIIT::clean()
 {
-    // Deallocate Player1->surface surface
+    // Deallocate Player1 surface
     SDL_FreeSurface(Player1->surface);
     Player1->surface = NULL;
+    
+    // Deallocate Player2 surface
+    SDL_FreeSurface(Player2->surface);
+    Player2->surface = NULL;
 
     // Deallocate Screen surface
     SDL_FreeSurface(ScreenSurface);

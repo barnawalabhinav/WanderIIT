@@ -14,6 +14,9 @@ using namespace std;
 class client
 {
 public :
+    client();
+    ~client();
+
 	int client_fd = 0, valread;
 	char buffer[1024] = { 0 };
 	char message[20];

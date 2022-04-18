@@ -12,6 +12,7 @@
 #include "buttons.h"
 #include "instructions.h"
 #include "client.h"
+#include "server.h"
 
 using namespace std;
 
@@ -47,9 +48,10 @@ public:
 
     //Check if the Space rectangle points to Hostel
     bool SameHostel(SDL_Rect Space, SDL_Rect Hostel);
-
     //Check if Position is within the Range of Hostel
     bool WithinRegion(SDL_Rect Position, SDL_Rect Area);
+    //Convert Char Array to String
+    string stringFromCharList (char *chrl);
 
     //Finish Point
     SDL_Rect FinishPoint;
@@ -57,6 +59,14 @@ public:
     // The surface contained by the window
     SDL_Surface *ScreenSurface = NULL;
     SDL_Texture *ScreenTexture = NULL;
+
+    SDL_Surface *WinSurface = NULL;
+    SDL_Texture *WinTexture = NULL;
+    SDL_Surface *LoseSurface = NULL;
+    SDL_Texture *LoseTexture = NULL;
+
+    SDL_Rect WinDim;
+    SDL_Rect LoseDim;
 
     // The music that will be played
     Mix_Music *Music = NULL;
@@ -69,10 +79,11 @@ public:
     Mix_Chunk *Finish = NULL;
 
     bool isOnline;
-    client* Myclient;
+    client* Myclient = nullptr;
+    server* Myserver = nullptr;
     vector <Player*> players;
     // int get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int y);
-    bool init(const char *name, int xpos, int ypos, int width, int height);
+    bool init(const char *name, int xpos, int ypos, int width, int height, int sys_type);
     void SetPixel(SDL_Surface *surface, int x, int y, uint8_t r, uint8_t g, uint8_t b);
     void handleEvents();
     void update();

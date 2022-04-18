@@ -2,6 +2,12 @@
 // programming
 #include "server.h"
 
+server::server()
+{}
+
+server::~server()
+{}
+
 int server::chartoint(char ch){
     int x = ch - '0';
     return x;
