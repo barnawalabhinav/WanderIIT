@@ -17,7 +17,7 @@ using namespace std;
 class server
 {
 	int server_fd, new_socket, valread;
-	char buffer[1024] = { 0 };
+	char message[20];
 	char* message = "Hello from server";
     
     int setupConnection();
