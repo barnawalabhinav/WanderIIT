@@ -21,7 +21,7 @@ struct data
 
 int main(int argc, char **argv)
 {
-    SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_AUDIO);
+    SDL_Init(SDL_INIT_EVERYTHING);
     SDLNet_Init();
 
     // Identifier of players in the order they join
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     IPaddress ip;
 
     // NULL indicates that this is a server
-    SDLNet_ResolveHost(&ip, NULL, 8080);
+    SDLNet_ResolveHost(&ip, NULL, 1234);
 
     vector<data> socketvector;
 
@@ -48,15 +48,15 @@ int main(int argc, char **argv)
     SDLNet_SocketSet sockets = SDLNet_AllocSocketSet(MAX_PLAYERS);
 
     // Create Window to Capture Key Events
-    SDL_Window *ServerWindow = SDL_CreateWindow("Server", 0, 0, 1231, 687, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    SDL_Window *ServerWindow = SDL_CreateWindow("Server", 0, 0, 640, 480, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     SDL_Renderer *ServerRenderer = SDL_CreateRenderer(ServerWindow, -1, SDL_RENDERER_ACCELERATED);
 
     // Create a socket for server
     TCPsocket server = SDLNet_TCP_Open(&ip);
 
-    char curr_tmp1[1400];
+    char curr_tmp[1400];
 
-    //if(server){	if ((csd = SDLNet_TCP_Accept(sd)))	{			if ((remoteIP = SDLNet_TCP_GetPeerAddress(csd)))			printf("Host connected: %x %d\n", SDLNet_Read32(&remoteIP->host), SDLNet_Read16(&remoteIP->port));		else			fprintf(stderr, "SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());				// Change the "if" to a "while" loop			while (SDLNet_TCP_Recv(csd, buffer, 512) > 0)		{			printf("Client say: %s\n", buffer);		}		printf("Host disconnected\n");	}}
+    // if(server){	if ((csd = SDLNet_TCP_Accept(sd)))	{			if ((remoteIP = SDLNet_TCP_GetPeerAddress(csd)))			printf("Host connected: %x %d\n", SDLNet_Read32(&remoteIP->host), SDLNet_Read16(&remoteIP->port));		else			fprintf(stderr, "SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());				// Change the "if" to a "while" loop			while (SDLNet_TCP_Recv(csd, buffer, 512) > 0)		{			printf("Client say: %s\n", buffer);		}		printf("Host disconnected\n");	}}
 
     while (running)
     {
@@ -84,10 +84,6 @@ int main(int argc, char **argv)
                 // The next player id will be 1 more than than current
                 curid++;
                 cout << "New Connection: " << curid << '\n';
-            }
-            else
-            {
-                sprintf(tmp, "3 \n");
             }
             // Send the socket details to the client
             SDLNet_TCP_Send(tmpsocket, tmp, strlen(tmp) + 1);
@@ -149,46 +145,48 @@ int main(int argc, char **argv)
                         break;
                     }
                 }
-
-                if (SDL_GetTicks() - socketvector[i].timeout > 5000)
-                {
-                    sprintf (tmp, "2 %d \n", socketvector[i].id);
-                    for (int k = 0; k < socketvector.size(); k++)
-                    {
-                        // We send the info that a player has been disconnected to each player
-                        SDLNet_TCP_Send(socketvector[k].socket, tmp, strlen(tmp) + 1);
-                    }
-                    // Delete the player who quit
-                    SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
-
-                    // Close the connection with that player
-                    SDLNet_TCP_Close(socketvector[i].socket);
-
-                    // Delete the socket from socket vector
-                    socketvector.erase(socketvector.begin() + i);
-
-                    // Decrease the number of players playing the game
-                    playernum--;
-                }
-
-                SDL_Delay(1);
             }
         }
+    }
+
+    for (int i = 0; i < socketvector.size(); i++)
+    {
+        if (SDL_GetTicks() - socketvector[i].timeout > 5000)
+        {
+            sprintf(tmp, "2 %d \n", socketvector[i].id);
+            for (int k = 0; k < socketvector.size(); k++)
+            {
+                // We send the info that a player has been disconnected to each player
+                SDLNet_TCP_Send(socketvector[k].socket, tmp, strlen(tmp) + 1);
+            }
+            // Delete the player who quit
+            SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
+
+            // Close the connection with that player
+            SDLNet_TCP_Close(socketvector[i].socket);
+
+            // Delete the socket from socket vector
+            socketvector.erase(socketvector.begin() + i);
+
+            // Decrease the number of players playing the game
+            playernum--;
+        }
+        SDL_Delay(1);
     }
 
     // Close the socket of each player when the game finishes
     for (int i = 0; i < socketvector.size(); i++)
     {
-        SDLNet_TCP_Close (socketvector[i].socket);
+        SDLNet_TCP_Close(socketvector[i].socket);
     }
 
     // Free the entities created
     SDLNet_FreeSocketSet(sockets);
 
-    //Close the server
+    // Close the server
     SDLNet_TCP_Close(server);
-        
-    //Exit
+
+    // Exit
     Mix_Quit();
     SDLNet_Quit();
     SDL_Quit();
