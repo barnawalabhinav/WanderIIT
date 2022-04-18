@@ -53,7 +53,7 @@ int server::setupConnection()
 	return 0;
 }
 
-void server::extract_data(char data[], int x, int y, int w, int h, int won, int quit, int miles)
+void server::extract_data(char data[], int &x, int &y, int &w, int &h, int &won, int &quit, int &miles)
 {
 	x = 1000*chartoint(data[0])+ 100*chartoint(data[1])+10*chartoint(data[2])+chartoint(data[3]);
 	y = 1000*chartoint(data[5])+ 100*chartoint(data[6])+10*chartoint(data[7])+chartoint(data[8]);
