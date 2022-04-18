@@ -16,12 +16,15 @@ using namespace std;
 
 class server
 {
-	int server_fd, new_socket, valread;
-	char message[20];
-	char* message = "Hello from server";
-    
+public:
+    int server_fd, new_socket, valread;
+    char message[20];
+    char buffer[1024] = {0};
+    char *message = "Hello from server";
+
     int setupConnection();
-    void sendData(Player *p);
+    int chartoint(char ch);
+    char *sendData(Player *p);
     void recvData(Player *p);
     void server::extract_data(char data[], int &x, int &y, int &w, int &h, int &won, int &quit, int &miles);
 };

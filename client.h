@@ -16,12 +16,13 @@ using namespace std;
 class client
 {
 public :
-	int client_fd, new_socket, valread;
+	int client_fd = 0, valread;
 	char buffer[1024] = { 0 };
 	char message[20];
     
-    int setupConnection();
+    int setupConnection(const char *IPaddr);
     char* sendData(Player *p);
     void recvData(Player *p);
-    void extract_data(char data[], int x, int y, int w, int h, int won, int quit, int miles);
+    int chartoint(char ch);
+    void extract_data(char data[], int &x, int &y, int &w, int &h, int &won, int &quit, int &miles);
 };
