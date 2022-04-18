@@ -1,7 +1,5 @@
 
 #include "Player.h"
-#include "Hurdles.h"
-#include "WanderIIT.h"
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
