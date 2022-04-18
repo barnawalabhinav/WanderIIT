@@ -177,10 +177,12 @@ bool WanderIIT::WithinRegion(SDL_Rect Position, SDL_Rect Area)
         return false;
 }
 
-bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int sys_type)
+bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height, int sysType)
 {
     Myclient = new client();
     Myserver = new server();
+
+    sys_type = sysType;
 
     //Defines whether system is client or server
     if (sys_type == 1)
@@ -195,7 +197,7 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     }
     else
     {
-        cout << "Hi Server!" << endl;
+        cout << "Hi Server! Waiting for Client!" << endl;
         Myserver->setupConnection();
     }
 
@@ -205,15 +207,21 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     Player1->GirlsHostelVisited.y = 0;
     Player1->GirlsHostelVisited.w = 0;
     Player1->GirlsHostelVisited.h = 0;
+    
+    Player2->GirlsHostelVisited.x = 0;
+    Player2->GirlsHostelVisited.y = 0;
+    Player2->GirlsHostelVisited.w = 0;
+    Player2->GirlsHostelVisited.h = 0;
 
     map_pos.x = 0;
     map_pos.y = 0;
 
     WinDim.x = 396;
     WinDim.y = 280;
-
     LoseDim.x = 397;
     LoseDim.y = 279;
+    QuitDim.x = 427;
+    QuitDim.y = 274;
 
     Dog0 = new Dog();
     Dog1 = new Dog();
@@ -241,15 +249,7 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     }
 
     printf("Game Initialized!\n");
-    /*
-        //Specify OPENGL version before use
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-    */
     // Creating game window
     window = SDL_CreateWindow(name, xpos, ypos, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
@@ -263,13 +263,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     curr_win_width = width;
     curr_win_height = height;
     printf("Window Created!\n");
-
-    // OpenGl Setup the Graphics context
-    // SDL_GLContext context;
-    // context = SDL_GL_CreateContext(window);
-
-    // Setup out function pointers
-    // gladLoadGLLoader(SDL_GL_GetProcAddress);
 
     // Creating the Renderer for our window
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -303,11 +296,11 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     object_instructions = new instructions();
     object_instructions->instructions_window(window, renderer);
 
-    SDL_Delay(2);
-
     //Display Buttons
 	object_buttons = new buttons();
 	int hostel = object_buttons->buttons_window(window, renderer);
+
+    cout << hostel << endl;
 
     //We take this input from User
     switch (hostel)
@@ -355,11 +348,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         break;
     }
 
-    FinishPoint = LHC;
-
-    Player1->position.x = Start.x;
-    Player1->position.y = Start.y;
-
     ScreenSurface = SDL_LoadBMP("Resources/map_label.bmp");
     ScreenTexture = SDL_CreateTextureFromSurface(renderer, ScreenSurface);
 
@@ -371,6 +359,11 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     }
 
     printf("Screen Created!\n");
+
+    FinishPoint = LHC;
+
+    Player1->position.x = Start.x;
+    Player1->position.y = Start.y;
 
     // Select the color for drawing. It is set to red here.
     // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -397,30 +390,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
 
     return true;
 }
-/*
-// Set the pixels colotr values at a position (x, y) to (r, g, b) arguments
-void WanderIIT::SetPixel(SDL_Surface *surface, int x, int y, uint8_t r, uint8_t g, uint8_t b)
-{
-    Once locked, surface->pixels is safe to access.
-    SDL_LockSurface(surface);
-    uint8_t *pixelArray = (uint8_t *)surface->pixels;
-    pixelArray[y * surface->pitch + x * surface->format->BytesPerPixel + 0] = g;
-    pixelArray[y * surface->pitch + x * surface->format->BytesPerPixel + 1] = b;
-    pixelArray[y * surface->pitch + x * surface->format->BytesPerPixel + 2] = r;
-    SDL_UnlockSurface(surface);
-}
-*/
-/*
-int WanderIIT::get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int y)
-{
-    unsigned char* pixels;
-    SDL_LockTexture( texture, NULL, (void**)&pixels, &surface->pitch );
-    // access pixels
-    int pixel = pixels[y*surface->pitch + x];
-    SDL_UnlockTexture( texture );
-    return pixel;
-}
-*/
 
 bool WanderIIT::loadmedia()
 {
@@ -450,7 +419,7 @@ bool WanderIIT::loadmedia()
     WinTexture = SDL_CreateTextureFromSurface(renderer, WinSurface);
     if (WinSurface == NULL)
     {
-        printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        printf("Unable to load the image Resources/won.bmp! SDL_ERROR: %s\n", SDL_GetError());
         isRunning = false;
         return false;
     }
@@ -461,11 +430,22 @@ bool WanderIIT::loadmedia()
     LoseTexture = SDL_CreateTextureFromSurface(renderer, LoseSurface);
     if (LoseSurface == NULL)
     {
-        printf("Unable to load the image Resources/Player2.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        printf("Unable to load the image Resources/lost.bmp! SDL_ERROR: %s\n", SDL_GetError());
         isRunning = false;
         return false;
     }
     SDL_QueryTexture(LoseTexture, NULL, NULL, &LoseDim.w, &LoseDim.h);
+
+    //Load Quit image
+    QuitSurface = SDL_LoadBMP("Resources/QuitGame.bmp");
+    QuitTexture = SDL_CreateTextureFromSurface(renderer, QuitSurface);
+    if (QuitSurface == NULL)
+    {
+        printf("Unable to load the image Resources/QuitGame.bmp! SDL_ERROR: %s\n", SDL_GetError());
+        isRunning = false;
+        return false;
+    }
+    SDL_QueryTexture(QuitTexture, NULL, NULL, &QuitDim.w, &QuitDim.h);
 
     // Load Dogs
     Dog0->surface = SDL_LoadBMP("Resources/Dog.bmp");
@@ -611,6 +591,8 @@ bool WanderIIT::loadmedia()
         return false;
     }
 
+    printf("Sounds Created!\n");
+
     return isRunning;
 }
 
@@ -632,6 +614,8 @@ void WanderIIT::handleEvents()
         curr_win_height = win_h;
     }
 
+    cout << "Window size checked!" << endl;
+
     // Capture movement of Dogs
     Dog0->move(curr_win_width, curr_win_height, map_pos, 0);
     Dog1->move(curr_win_width, curr_win_height, map_pos, 139);
@@ -644,12 +628,16 @@ void WanderIIT::handleEvents()
     Dog8->move(curr_win_width, curr_win_height, map_pos, 8139);
     Dog9->move(curr_win_width, curr_win_height, map_pos, 412);
 
+    cout << "Dogs Moved!" << endl;
+
     // Capture movement of Professors
     Prof0->move(curr_win_width, curr_win_height, map_pos, 0);
     Prof1->move(curr_win_width, curr_win_height, map_pos, 139);
     Prof2->move(curr_win_width, curr_win_height, map_pos, 521);
     Prof3->move(curr_win_width, curr_win_height, map_pos, 54);
     Prof4->move(curr_win_width, curr_win_height, map_pos, 213);
+
+    cout << "Profs moved!" << endl;
 
     SDL_Event event;
     
@@ -672,6 +660,7 @@ void WanderIIT::handleEvents()
     {
         // Capture movement of player
         Player1->move(event, state, curr_win_width, curr_win_height, map_pos, Key_Reverse);
+        cout << "Player moved!" << endl;
     }
 
     // Apply the Player1->surface image
@@ -680,11 +669,25 @@ void WanderIIT::handleEvents()
 
 void WanderIIT::update()
 {
-    // Update the surface
-    if(isOnline)
+    if (sys_type == 1)
     {
-        Myclient->sendData(Player1);
-        Myclient->recvData(Player2);
+        if(isOnline)
+        {
+            Myclient->sendData(Player1);
+            cout << "Data Sent!" << endl;
+            Myclient->recvData(Player2);
+            cout << "Data Received!" << endl;
+        }
+    }
+    else
+    {
+        if(isOnline)
+        {
+            Myserver->sendData(Player1);
+            cout << "Data Sent!" << endl;
+            Myserver->recvData(Player2);
+            cout << "Data Received!" << endl;
+        }
     }
 }
 
@@ -692,21 +695,22 @@ void WanderIIT::render()
 {
     // Clear the current rendering target with the drawing color
     SDL_RenderClear(renderer);
-    //Check for someone winning the game
-    if (Player1->GameWon == 1)
+    //Check for someone quitting the game
+    if (Player2->quit == 1)
     {
-        SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);
-
+        SDL_RenderCopy(renderer, QuitTexture, NULL, &QuitDim);
+    }
+    //Check for someone winning the game
+    else if (Player1->GameWon == 1)
+    {
+        SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);        
         SDL_Delay(5000);
-
         isRunning = false;
     }
     else if (Player2->GameWon == 1)
     {
         SDL_RenderCopy(renderer, LoseTexture, NULL, &LoseDim);
-
         SDL_Delay(5000);
-
         isRunning = false;
     }
     // Get the map on the screen
@@ -718,8 +722,11 @@ void WanderIIT::render()
     // Get the Player1 on the screen
     SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
     
-    // Get the Player2 on the screen
-    SDL_RenderCopy(renderer, Player2->texture, NULL, &Player2->position);
+    if (Player2->quit == 0 && Player2->GameWon == 0)
+    {
+        // Get the Player2 on the screen
+        SDL_RenderCopy(renderer, Player2->texture, NULL, &Player2->position);
+    }
 
     // Update position of Dogs on the screen
     SDL_RenderCopy(renderer, Dog0->texture, NULL, &Dog0->position);

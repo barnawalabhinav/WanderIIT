@@ -46,6 +46,7 @@ public:
     SDL_Rect Karakoram;
     SDL_Rect Nilgiri;
 
+    int sys_type;
     //Check if the Space rectangle points to Hostel
     bool SameHostel(SDL_Rect Space, SDL_Rect Hostel);
     //Check if Position is within the Range of Hostel
@@ -64,9 +65,12 @@ public:
     SDL_Texture *WinTexture = NULL;
     SDL_Surface *LoseSurface = NULL;
     SDL_Texture *LoseTexture = NULL;
+    SDL_Surface *QuitSurface = NULL;
+    SDL_Texture *QuitTexture = NULL;
 
     SDL_Rect WinDim;
     SDL_Rect LoseDim;
+    SDL_Rect QuitDim;
 
     // The music that will be played
     Mix_Music *Music = NULL;
@@ -82,9 +86,7 @@ public:
     client* Myclient = nullptr;
     server* Myserver = nullptr;
     vector <Player*> players;
-    // int get_pixel(SDL_Surface *surface, SDL_Texture *texture, int x, int y);
     bool init(const char *name, int xpos, int ypos, int width, int height, int sys_type);
-    void SetPixel(SDL_Surface *surface, int x, int y, uint8_t r, uint8_t g, uint8_t b);
     void handleEvents();
     void update();
     void render();

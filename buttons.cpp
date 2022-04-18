@@ -41,77 +41,77 @@ int buttons::buttons_window(SDL_Window *window, SDL_Renderer *render)
 
 	while (running)
 	{
-		SDL_Event event;
-		SDL_PollEvent(&event);
+		SDL_Event button_event;
+		SDL_PollEvent(&button_event);
 		int x, y;
-		if (event.type == SDL_QUIT)
+		if (button_event.type == SDL_QUIT)
 			running = false;
 		else
 		{
 			SDL_GetMouseState(&x, &y);
-			if (event.button.button == SDL_BUTTON_LEFT)
+			if (button_event.button.button == SDL_BUTTON_LEFT)
 			{
-				if (39 < x - 254 && x - 254 < 179 && 35 < y - 103 && y - 103 < 100)
+				if (39 < x - srcrect.x && x - srcrect.x < 179 && 35 < y - srcrect.y && y - srcrect.y < 100)
 				{
 					hostelname = 1; // Satpura;
 					running = false;
 				}
-				else if (208 < x - 254 && x - 254 < 344 && 34 < y - 103 && y - 103 < 99)
+				else if (208 < x - srcrect.x && x - srcrect.x < 344 && 34 < y - srcrect.y && y - srcrect.y < 99)
 				{
 					hostelname = 2; // Girnar;
 					running = false;
 				}
-				else if (364 < x - 254 && x - 254 < 493 && 34 < y - 103 && y - 103 < 98)
+				else if (364 < x - srcrect.x && x - srcrect.x < 493 && 34 < y - srcrect.y && y - srcrect.y < 98)
 				{
 					hostelname = 3; // Udaigiri;
 					running = false;
 				}
-				else if (517 < x - 254 && x - 254 < 654 && 33 < y - 103 && y - 103 < 97)
+				else if (517 < x - srcrect.x && x - srcrect.x < 654 && 33 < y - srcrect.y && y - srcrect.y < 97)
 				{
 					hostelname = 4; // Karakoram;
 					running = false;
 				}
-				else if (41 < x - 254 && x - 254 < 181 && 136 < y - 103 && y - 103 < 202)
+				else if (41 < x - srcrect.x && x - srcrect.x < 181 && 136 < y - srcrect.y && y - srcrect.y < 202)
 				{
 					hostelname = 5; // Nilgiri;
 					running = false;
 				}
-				else if (212 < x - 254 && x - 254 < 347 && 135 < y - 103 && y - 103 < 200)
+				else if (212 < x - srcrect.x && x - srcrect.x < 347 && 135 < y - srcrect.y && y - srcrect.y < 200)
 				{
 					hostelname = 6; // Aravali;
 					running = false;
 				}
-				else if (368 < x - 254 && x - 254 < 493 && 134 < y - 103 && y - 103 < 200)
+				else if (368 < x - srcrect.x && x - srcrect.x < 493 && 134 < y - srcrect.y && y - srcrect.y < 200)
 				{
 					hostelname = 7; // Kumaon;
 					running = false;
 				}
-				else if (518 < x - 254 && x - 254 < 655 && 133 < y - 103 && y - 103 < 196)
+				else if (518 < x - srcrect.x && x - srcrect.x < 655 && 133 < y - srcrect.y && y - srcrect.y < 196)
 				{
 					hostelname = 8; // Himadri;
 					running = false;
 				}
-				else if (42 < x - 254 && x - 254 < 182 && 231 < y - 103 && y - 103 < 303)
+				else if (42 < x - srcrect.x && x - srcrect.x < 182 && 231 < y - srcrect.y && y - srcrect.y < 303)
 				{
 					hostelname = 9; // Kailash;
 					running = false;
 				}
-				else if (212 < x - 254 && x - 254 < 347 && 232 < y - 103 && y - 103 < 303)
+				else if (212 < x - srcrect.x && x - srcrect.x < 347 && 232 < y - srcrect.y && y - srcrect.y < 303)
 				{
 					hostelname = 10; // Vindhyachal;
 					running = false;
 				}
-				else if (371 < x - 254 && x - 254 < 494 && 231 < y - 103 && y - 103 < 302)
+				else if (371 < x - srcrect.x && x - srcrect.x < 494 && 231 < y - srcrect.y && y - srcrect.y < 302)
 				{
 					hostelname = 11; // Zanskar;
 					running = false;
 				}
-				else if (43 < x - 254 && x - 254 < 183 && 332 < y - 103 && y - 103 < 405)
+				else if (43 < x - srcrect.x && x - srcrect.x < 183 && 332 < y - srcrect.y && y - srcrect.y < 405)
 				{
 					hostelname = 12; // Shivalik;
 					running = false;
 				}
-				else if (214 < x - 254 && x - 254 < 351 && 332 < y - 103 && y - 103 < 406)
+				else if (214 < x - srcrect.x && x - srcrect.x < 351 && 332 < y - srcrect.y && y - srcrect.y < 406)
 				{
 					hostelname = 13; // Jwalamukhi;
 					running = false;

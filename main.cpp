@@ -6,7 +6,7 @@ int main ( int argc, char* argv[])
 {
     //Defines whether system is client or server
     int sys_type = 0;
-    if (argc > 1 && game->stringFromCharList(argv[1]) == "1")
+    if (argc > 1 && game->stringFromCharList(argv[argc-1]) == "1")
     {
         sys_type = 1;
     }
@@ -17,10 +17,10 @@ int main ( int argc, char* argv[])
     game->loadmedia();
 
     while (game->running()) {
+        game->render();
         game->handleEvents();
         game->collison();
         game->update();
-        game->render();
     }
 
     game->clean();

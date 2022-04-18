@@ -21,8 +21,6 @@ class Player
         vector<SDL_Rect> BoysHostelsVisited;
         SDL_Rect GirlsHostelVisited;
 
-        //id of player
-        int id;
         //Check if the player quit
         int quit;
         //check if id is already set
@@ -36,9 +34,6 @@ class Player
         //The position where Player is is to be placed
         SDL_Rect position;
 
-        void setId(int i);
-        int getId();
-        bool isReady();
         bool move(SDL_Event event, const Uint8 *state, int curr_win_width, int curr_win_height, SDL_Rect map_pos, int Key_Reverse);
 };
 
