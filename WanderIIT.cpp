@@ -342,6 +342,65 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     default:
         break;
     }
+	
+	
+    srand(time(0));
+    int x=0;
+    x=(rand())%6;
+
+    SDL_Surface *bmp_goal=nullptr;
+
+    if(x==0){
+        FinishPoint = LHC;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/LHC_image.bmp");
+    }
+    else if(x==1){
+        FinishPoint = Main_Building;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Main_Building_image.bmp");
+    }
+    else if(x==2){
+        FinishPoint = Library;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Library_image.bmp");
+
+    }
+    else if(x==3){
+        FinishPoint = Amul;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Amul_image.bmp");
+    }
+    else if(x==4){
+        FinishPoint = Ground;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Ground_image.bmp");
+    }
+    else {
+        FinishPoint = Bharti_School;
+        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Bharati_School_image.bmp");
+    }
+
+    if (bmp_goal == nullptr)
+	{
+		printf("SDL_LoadBMP_goal Error: ");
+		return 1;
+	}
+
+    SDL_Texture *texture_goal = SDL_CreateTextureFromSurface(renderer, bmp_goal);
+	SDL_FreeSurface(bmp_goal);
+	if (texture_goal == nullptr)
+	{
+		printf("SDL_CreateTextureFromSurface Error: ");
+		return 1;
+	}
+    
+    
+    SDL_Rect rectangle;
+    rectangle.x = 295;
+    rectangle.y = 103;
+    rectangle.w = 640;
+    rectangle.h = 480;
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture_goal, NULL, &rectangle);
+    SDL_RenderPresent(renderer);
+    SDL_Delay(10000);
+    SDL_DestroyTexture(texture_goal);
 
     ScreenSurface = SDL_LoadBMP("Resources/map_label.bmp");
     ScreenTexture = SDL_CreateTextureFromSurface(renderer, ScreenSurface);
