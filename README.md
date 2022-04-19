@@ -30,40 +30,37 @@ This project contains the following:
 
 To build and execute move to directory of the files and type, in the command line :
     
-First run make on both the systems
+On both the systems, first run
 
     make
 
-Next run make server on the system which is the server
+Next, on the system which is the server, run
 
     make server
 
-Next run make client on the system which is the client
+Next, on the system which is the client, make client
 
     make client
 
-Next it asks the ip address of the server, enter the ip address of the server
+Next enter the ip address of the server in the client system. There you go!
 
-    <ip address of the server>
-
-TO obtain ip address in linux, go to terminal and type ifconfig
+To obtain ip address in linux, go to terminal and type
 
     ifconfig
 
-If ifconfig is not found, run
+If `ifconfig` is not found, run
 
     sudo apt-get install net-tools
 
-
 Then to run the game, both the players need to follow the instructions given:
-Clicking next on the instructions page
+Click next on the instructions page
 Followed by choosing their hostels
 
 ### Acknowledgments
 
-    https://www.geeksforgeeks.org/
-    https://lazyfoo.net/tutorials/SDL/index.php
-    https://pixabay.com
-    https://www.piskelapp.com/
-    https://www.youtube.com/playlist?list=PLhfAbcv9cehhkG7ZQK0nfIGJC_C-wSLrx
-    
+1. [To learn Sockets](https://www.geeksforgeeks.org/)
+2. [To learn SDL2 library](https://lazyfoo.net/tutorials/SDL/index.php)
+3. [For sound effects](https://pixabay.com)
+4. [For pixel art](https://www.piskelapp.com/)
+5. [To Learn the basics of Game Development](https://www.youtube.com/playlist?list=PLhfAbcv9cehhkG7ZQK0nfIGJC_C-wSLrx)
+6. [To learn SDLNet Integration with game](https://www.youtube.com/watch?v=iJfC4-yNnzY&t=2302s)
