@@ -248,8 +248,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         return false;
     }
 
-    printf("Game Initialized!\n");
-
     // Creating game window
     window = SDL_CreateWindow(name, xpos, ypos, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
@@ -262,7 +260,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
 
     curr_win_width = width;
     curr_win_height = height;
-    printf("Window Created!\n");
 
     // Creating the Renderer for our window
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -273,8 +270,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         isRunning = false;
         return false;
     }
-
-    printf("Renderer Created!\n");
 
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
@@ -358,36 +353,12 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         return false;
     }
 
-    printf("Screen Created!\n");
-
     FinishPoint = LHC;
 
     Player1->position.x = Start.x;
     Player1->position.y = Start.y;
-
-    // Select the color for drawing. It is set to red here.
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-    /*
-        //Get window surface
-        ScreenSurface = SDL_GetWindowSurface( window );
-        if ( ScreenSurface == NULL ) {
-            printf( "Screen Surface could not be created!, SDL_Error: %s\n", SDL_GetError() );
-            isRunning = false;
-            return false;
-        }
-
-        //Background Color of the surface
-        SDL_FillRect(ScreenSurface, NULL, SDL_MapRGB(ScreenSurface->format, 0, 0, 0));
-
-        glViewport(0, 0, 640, 480);
-        //glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        SDL_GL_SwapWindow( window );
-    */
-    // Accessed by the running() constructor
+    
     isRunning = true;
-
     return true;
 }
 
@@ -478,8 +449,6 @@ bool WanderIIT::loadmedia()
         return false;
     }
 
-    printf("Dogs Created!\n");
-
     // Set initial position of dogs
     Dog0->position.x = 208;
     Dog0->position.y = 221;
@@ -532,8 +501,6 @@ bool WanderIIT::loadmedia()
         isRunning = false;
         return false;
     }
-
-    printf("Profs Created!\n");
 
     // Set initial position of Profs
     Prof0->position.x = 651;
@@ -591,8 +558,6 @@ bool WanderIIT::loadmedia()
         return false;
     }
 
-    printf("Sounds Created!\n");
-
     return isRunning;
 }
 
@@ -614,8 +579,6 @@ void WanderIIT::handleEvents()
         curr_win_height = win_h;
     }
 
-    cout << "Window size checked!" << endl;
-
     // Capture movement of Dogs
     Dog0->move(curr_win_width, curr_win_height, map_pos, 0);
     Dog1->move(curr_win_width, curr_win_height, map_pos, 139);
@@ -628,16 +591,12 @@ void WanderIIT::handleEvents()
     Dog8->move(curr_win_width, curr_win_height, map_pos, 8139);
     Dog9->move(curr_win_width, curr_win_height, map_pos, 412);
 
-    cout << "Dogs Moved!" << endl;
-
     // Capture movement of Professors
     Prof0->move(curr_win_width, curr_win_height, map_pos, 0);
     Prof1->move(curr_win_width, curr_win_height, map_pos, 139);
     Prof2->move(curr_win_width, curr_win_height, map_pos, 521);
     Prof3->move(curr_win_width, curr_win_height, map_pos, 54);
     Prof4->move(curr_win_width, curr_win_height, map_pos, 213);
-
-    cout << "Profs moved!" << endl;
 
     SDL_Event event;
     
@@ -660,7 +619,6 @@ void WanderIIT::handleEvents()
     {
         // Capture movement of player
         Player1->move(event, state, curr_win_width, curr_win_height, map_pos, Key_Reverse);
-        cout << "Player moved!" << endl;
     }
 
     // Apply the Player1->surface image
@@ -674,9 +632,7 @@ void WanderIIT::update()
         if(isOnline)
         {
             Myclient->sendData(Player1);
-            cout << "Data Sent!" << endl;
             Myclient->recvData(Player2);
-            cout << "Data Received!" << endl;
         }
     }
     else
@@ -684,9 +640,7 @@ void WanderIIT::update()
         if(isOnline)
         {
             Myserver->sendData(Player1);
-            cout << "Data Sent!" << endl;
             Myserver->recvData(Player2);
-            cout << "Data Received!" << endl;
         }
     }
 }
@@ -695,24 +649,7 @@ void WanderIIT::render()
 {
     // Clear the current rendering target with the drawing color
     SDL_RenderClear(renderer);
-    //Check for someone quitting the game
-    if (Player2->quit == 1)
-    {
-        SDL_RenderCopy(renderer, QuitTexture, NULL, &QuitDim);
-    }
-    //Check for someone winning the game
-    else if (Player1->GameWon == 1)
-    {
-        SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);        
-        SDL_Delay(5000);
-        isRunning = false;
-    }
-    else if (Player2->GameWon == 1)
-    {
-        SDL_RenderCopy(renderer, LoseTexture, NULL, &LoseDim);
-        SDL_Delay(5000);
-        isRunning = false;
-    }
+    
     // Get the map on the screen
     SDL_QueryTexture(ScreenTexture, NULL, NULL, &screen_width, &screen_height);
     map_pos.w = MAP_FRAME_WIDTH;
@@ -747,6 +684,21 @@ void WanderIIT::render()
     SDL_RenderCopy(renderer, Prof3->texture, NULL, &Prof3->position);
     SDL_RenderCopy(renderer, Prof4->texture, NULL, &Prof4->position);
 
+    //Check for someone quitting the game
+    if (Player2->quit == 1)
+    {
+        SDL_RenderCopy(renderer, QuitTexture, NULL, &QuitDim);
+    }
+    //Check for someone winning the game
+    else if (Player1->GameWon == 1)
+    {
+        SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);
+    }
+    else if (Player2->GameWon == 1)
+    {
+        SDL_RenderCopy(renderer, LoseTexture, NULL, &LoseDim);
+    }
+
     // Update the screen with any rendering performed since the previous call
     SDL_RenderPresent(renderer);
 }
@@ -759,6 +711,7 @@ void WanderIIT::collison()
         if (Player1->CompletedMilestones == MAX_MILESTONES)
         {
             Player1->GameWon = 1;
+            Mix_PlayChannel( -1, Finish, 0 );
         }
     }
     //Check collison with own hostel

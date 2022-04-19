@@ -110,13 +110,6 @@ void client::recvData(Player *p)
 {
 	valread = read(client_fd, buffer, 1024);
 	extract_data(buffer, p->position.x, p->position.y, p->position.w, p->position.h, p->GameWon, p->quit, p->CompletedMilestones);
-	cout << p->position.x << endl;
-	cout << p->position.y << endl;
-	cout << p->position.w << endl;
-	cout << p->position.h << endl;
-	cout << p->GameWon << endl;
-	cout << p->quit << endl;
-	cout << p->CompletedMilestones << endl;
 }
 /*
 int main(){

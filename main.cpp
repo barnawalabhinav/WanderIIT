@@ -17,10 +17,10 @@ int main ( int argc, char* argv[])
     game->loadmedia();
 
     while (game->running()) {
-        game->render();
         game->handleEvents();
         game->collison();
         game->update();
+        game->render();
     }
 
     game->clean();
