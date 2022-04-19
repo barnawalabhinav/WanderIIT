@@ -9,6 +9,7 @@
 using namespace std;
 
 #define MAX_MILESTONES 4
+#define LIFE 3
 
 class Player
 {
@@ -18,6 +19,7 @@ class Player
 
         //Number of Milestones Completed by player
         int CompletedMilestones;
+        int health;
         vector<SDL_Rect> BoysHostelsVisited;
         SDL_Rect GirlsHostelVisited;
 

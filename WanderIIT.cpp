@@ -149,13 +149,13 @@ Prof *Prof2 = nullptr;
 Prof *Prof3 = nullptr;
 Prof *Prof4 = nullptr;
 
-string WanderIIT::stringFromCharList (char *chrl) //generate string from list of characters
+string WanderIIT::stringFromCharList(char *chrl) // generate string from list of characters
 {
     string str = "";
     int i = 0;
-    while(chrl[i])
+    while (chrl[i])
     {
-        str+=chrl[i]; //append current character to the string generated till now
+        str += chrl[i]; // append current character to the string generated till now
         i++;
     }
     return str;
@@ -184,10 +184,10 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
 
     sys_type = sysType;
 
-    //Defines whether system is client or server
+    // Defines whether system is client or server
     if (sys_type == 1)
     {
-        if(isOnline)
+        if (isOnline)
         {
             char ip[20];
             cout << "Hi Client! Please enter server ip address : ";
@@ -207,7 +207,7 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     Player1->GirlsHostelVisited.y = 0;
     Player1->GirlsHostelVisited.w = 0;
     Player1->GirlsHostelVisited.h = 0;
-    
+
     Player2->GirlsHostelVisited.x = 0;
     Player2->GirlsHostelVisited.y = 0;
     Player2->GirlsHostelVisited.w = 0;
@@ -271,33 +271,33 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         return false;
     }
 
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
         cout << "Error at OpenAudio : " << Mix_GetError() << endl;
     }
 
-    Music = Mix_LoadMUS( "Resources/Music.wav" );
-    if( Music == NULL )
+    Music = Mix_LoadMUS("Resources/Music.wav");
+    if (Music == NULL)
     {
-        printf( "Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
-    
-    Mix_VolumeMusic(MIX_MAX_VOLUME/4);
+
+    Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
     Mix_PlayMusic(Music, -1);
 
-    //Display Instructions
+    // Display Instructions
     object_instructions = new instructions();
     object_instructions->instructions_window(window, renderer);
 
-    //Display Buttons
-	object_buttons = new buttons();
-	int hostel = object_buttons->buttons_window(window, renderer);
+    // Display Buttons
+    object_buttons = new buttons();
+    int hostel = object_buttons->buttons_window(window, renderer);
 
     cout << hostel << endl;
 
-    //We take this input from User
+    // We take this input from User
     switch (hostel)
     {
     case 1:
@@ -342,55 +342,58 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     default:
         break;
     }
-	
-	
+
     srand(time(0));
-    int x=0;
-    x=(rand())%6;
+    int x = 0;
+    x = (rand()) % 6;
 
-    SDL_Surface *bmp_goal=nullptr;
+    SDL_Surface *bmp_goal = nullptr;
 
-    if(x==0){
+    if (x == 0)
+    {
         FinishPoint = LHC;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/LHC_image.bmp");
+        bmp_goal = SDL_LoadBMP("Resources/LHC_image.bmp");
     }
-    else if(x==1){
+    else if (x == 1)
+    {
         FinishPoint = Main_Building;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Main_Building_image.bmp");
+        bmp_goal = SDL_LoadBMP("Resources/Main_Building_image.bmp");
     }
-    else if(x==2){
+    else if (x == 2)
+    {
         FinishPoint = Library;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Library_image.bmp");
-
+        bmp_goal = SDL_LoadBMP("Resources/Library_image.bmp");
     }
-    else if(x==3){
+    else if (x == 3)
+    {
         FinishPoint = Amul;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Amul_image.bmp");
+        bmp_goal = SDL_LoadBMP("Resources/Amul_image.bmp");
     }
-    else if(x==4){
+    else if (x == 4)
+    {
         FinishPoint = Ground;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Ground_image.bmp");
+        bmp_goal = SDL_LoadBMP("Resources/Ground_image.bmp");
     }
-    else {
+    else
+    {
         FinishPoint = Bharti_School;
-        SDL_Surface *bmp_goal = SDL_LoadBMP("Resources/Bharati_School_image.bmp");
+        bmp_goal = SDL_LoadBMP("Resources/Bharati_School_image.bmp");
     }
 
     if (bmp_goal == nullptr)
-	{
-		printf("SDL_LoadBMP_goal Error: ");
-		return 1;
-	}
+    {
+        printf("SDL_LoadBMP_goal Error: ");
+        return 1;
+    }
 
     SDL_Texture *texture_goal = SDL_CreateTextureFromSurface(renderer, bmp_goal);
-	SDL_FreeSurface(bmp_goal);
-	if (texture_goal == nullptr)
-	{
-		printf("SDL_CreateTextureFromSurface Error: ");
-		return 1;
-	}
-    
-    
+    SDL_FreeSurface(bmp_goal);
+    if (texture_goal == nullptr)
+    {
+        printf("SDL_CreateTextureFromSurface Error: ");
+        return 1;
+    }
+
     SDL_Rect rectangle;
     rectangle.x = 295;
     rectangle.y = 103;
@@ -399,7 +402,7 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture_goal, NULL, &rectangle);
     SDL_RenderPresent(renderer);
-    SDL_Delay(10000);
+    SDL_Delay(5000);
     SDL_DestroyTexture(texture_goal);
 
     ScreenSurface = SDL_LoadBMP("Resources/map_label.bmp");
@@ -412,11 +415,9 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
         return false;
     }
 
-    FinishPoint = LHC;
-
     Player1->position.x = Start.x;
     Player1->position.y = Start.y;
-    
+
     isRunning = true;
     return true;
 }
@@ -444,7 +445,7 @@ bool WanderIIT::loadmedia()
     }
     SDL_QueryTexture(Player2->texture, NULL, NULL, &Player2->position.w, &Player2->position.h);
 
-    //Load win image
+    // Load win image
     WinSurface = SDL_LoadBMP("Resources/won.bmp");
     WinTexture = SDL_CreateTextureFromSurface(renderer, WinSurface);
     if (WinSurface == NULL)
@@ -455,7 +456,7 @@ bool WanderIIT::loadmedia()
     }
     SDL_QueryTexture(WinTexture, NULL, NULL, &WinDim.w, &WinDim.h);
 
-    //Load lose image
+    // Load lose image
     LoseSurface = SDL_LoadBMP("Resources/lost.bmp");
     LoseTexture = SDL_CreateTextureFromSurface(renderer, LoseSurface);
     if (LoseSurface == NULL)
@@ -466,7 +467,7 @@ bool WanderIIT::loadmedia()
     }
     SDL_QueryTexture(LoseTexture, NULL, NULL, &LoseDim.w, &LoseDim.h);
 
-    //Load Quit image
+    // Load Quit image
     QuitSurface = SDL_LoadBMP("Resources/QuitGame.bmp");
     QuitTexture = SDL_CreateTextureFromSurface(renderer, QuitSurface);
     if (QuitSurface == NULL)
@@ -579,40 +580,40 @@ bool WanderIIT::loadmedia()
     SDL_QueryTexture(Prof2->texture, NULL, NULL, &Prof2->position.w, &Prof2->position.h);
     SDL_QueryTexture(Prof3->texture, NULL, NULL, &Prof3->position.w, &Prof3->position.h);
     SDL_QueryTexture(Prof4->texture, NULL, NULL, &Prof4->position.w, &Prof4->position.h);
-    
-    //Load sound effects
-    DogCollide = Mix_LoadWAV( "Resources/DogCollide.wav" );
-    if( DogCollide == NULL )
+
+    // Load sound effects
+    DogCollide = Mix_LoadWAV("Resources/DogCollide.wav");
+    if (DogCollide == NULL)
     {
-        printf( "Failed to load DogCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load DogCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
-    ProfCollide = Mix_LoadWAV( "Resources/ProfCollide.wav" );
-    if( ProfCollide == NULL )
+    ProfCollide = Mix_LoadWAV("Resources/ProfCollide.wav");
+    if (ProfCollide == NULL)
     {
-        printf( "Failed to load ProfCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load ProfCollide sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
-    KeyCorrect = Mix_LoadWAV( "Resources/KeyCorrect.wav" );
-    if( KeyCorrect == NULL )
+    KeyCorrect = Mix_LoadWAV("Resources/KeyCorrect.wav");
+    if (KeyCorrect == NULL)
     {
-        printf( "Failed to load KeyCorrect sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load KeyCorrect sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
-    Milestone = Mix_LoadWAV( "Resources/Milestone.wav" );
-    if( Milestone == NULL )
+    Milestone = Mix_LoadWAV("Resources/Milestone.wav");
+    if (Milestone == NULL)
     {
-        printf( "Failed to load Milestone sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load Milestone sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
-    Finish = Mix_LoadWAV( "Resources/Finish.wav" );
-    if( Finish == NULL )
+    Finish = Mix_LoadWAV("Resources/Finish.wav");
+    if (Finish == NULL)
     {
-        printf( "Failed to load Finish sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load Finish sound effect! SDL_mixer Error: %s\n", Mix_GetError());
         isRunning = false;
         return false;
     }
@@ -658,7 +659,7 @@ void WanderIIT::handleEvents()
     Prof4->move(curr_win_width, curr_win_height, map_pos, 213);
 
     SDL_Event event;
-    
+
     // Starting Event Loop
     SDL_PollEvent(&event);
 
@@ -671,8 +672,8 @@ void WanderIIT::handleEvents()
     // Handle Different Events
     else if (event.type == SDL_QUIT)
     {
-        isRunning = false;
         Player1->quit = 1;
+        isRunning = false;
     }
     else
     {
@@ -688,7 +689,7 @@ void WanderIIT::update()
 {
     if (sys_type == 1)
     {
-        if(isOnline)
+        if (isOnline)
         {
             Myclient->sendData(Player1);
             Myclient->recvData(Player2);
@@ -696,7 +697,7 @@ void WanderIIT::update()
     }
     else
     {
-        if(isOnline)
+        if (isOnline)
         {
             Myserver->sendData(Player1);
             Myserver->recvData(Player2);
@@ -708,7 +709,7 @@ void WanderIIT::render()
 {
     // Clear the current rendering target with the drawing color
     SDL_RenderClear(renderer);
-    
+
     // Get the map on the screen
     SDL_QueryTexture(ScreenTexture, NULL, NULL, &screen_width, &screen_height);
     map_pos.w = MAP_FRAME_WIDTH;
@@ -717,7 +718,7 @@ void WanderIIT::render()
 
     // Get the Player1 on the screen
     SDL_RenderCopy(renderer, Player1->texture, NULL, &Player1->position);
-    
+
     if (Player2->quit == 0 && Player2->GameWon == 0)
     {
         // Get the Player2 on the screen
@@ -743,19 +744,27 @@ void WanderIIT::render()
     SDL_RenderCopy(renderer, Prof3->texture, NULL, &Prof3->position);
     SDL_RenderCopy(renderer, Prof4->texture, NULL, &Prof4->position);
 
-    //Check for someone quitting the game
+    // Check for someone quitting the game
     if (Player2->quit == 1)
     {
         SDL_RenderCopy(renderer, QuitTexture, NULL, &QuitDim);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(5000);
     }
-    //Check for someone winning the game
-    else if (Player1->GameWon == 1)
+    // Check for someone winning the game
+    else if (Player1->GameWon == 1 || Player2->health == 0)
     {
         SDL_RenderCopy(renderer, WinTexture, NULL, &WinDim);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(5000);
+        isRunning = false;
     }
-    else if (Player2->GameWon == 1)
+    else if (Player2->GameWon == 1 || Player1->health == 0)
     {
         SDL_RenderCopy(renderer, LoseTexture, NULL, &LoseDim);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(5000);
+        isRunning = false;
     }
 
     // Update the screen with any rendering performed since the previous call
@@ -764,32 +773,32 @@ void WanderIIT::render()
 
 void WanderIIT::collison()
 {
-    //Check collison with Finish Point
+    // Check collison with Finish Point
     if (WithinRegion(Player1->position, FinishPoint))
     {
         if (Player1->CompletedMilestones == MAX_MILESTONES)
         {
             Player1->GameWon = 1;
-            Mix_PlayChannel( -1, Finish, 0 );
+            Mix_PlayChannel(-1, Finish, 0);
         }
     }
-    //Check collison with own hostel
+    // Check collison with own hostel
     else if (WithinRegion(Player1->position, Start))
     {
         if (Key_Reverse == -1)
         {
-            Mix_PlayChannel( -1, KeyCorrect, 0 );
+            Mix_PlayChannel(-1, KeyCorrect, 0);
         }
         Key_Reverse = 1;
     }
-    //Check collison with other hostels
+    // Check collison with other hostels
     else if (WithinRegion(Player1->position, Himadri))
     {
         if (!SameHostel(Player1->GirlsHostelVisited, Himadri) && !SameHostel(Player1->GirlsHostelVisited, Kailash))
         {
             Player1->CompletedMilestones++;
             Player1->GirlsHostelVisited = Himadri;
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Kailash))
@@ -798,7 +807,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->GirlsHostelVisited = Kailash;
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Girnar))
@@ -816,7 +825,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Girnar);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Satpura))
@@ -834,7 +843,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Satpura);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Jwala))
@@ -852,7 +861,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Jwala);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Aravali))
@@ -870,7 +879,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Aravali);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Kumaon))
@@ -888,7 +897,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Kumaon);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Karakoram))
@@ -906,7 +915,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Karakoram);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Zanskar))
@@ -924,7 +933,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Zanskar);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Vindhyachal))
@@ -942,7 +951,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Vindhyachal);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Shivalik))
@@ -960,7 +969,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Shivalik);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Udaigiri))
@@ -978,7 +987,7 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Udaigiri);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
     else if (WithinRegion(Player1->position, Nilgiri))
@@ -996,35 +1005,36 @@ void WanderIIT::collison()
         {
             Player1->CompletedMilestones++;
             Player1->BoysHostelsVisited.push_back(Nilgiri);
-            Mix_PlayChannel( -1, Milestone, 0 );
+            Mix_PlayChannel(-1, Milestone, 0);
         }
     }
 
-    //Check Collison with a dog
+    // Check Collison with a dog
     else if ((Player1->position.x - Dog0->position.x < 4 && Dog0->position.x - Player1->position.x < 4 && Player1->position.y - Dog0->position.y < 4 && Dog0->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog1->position.x < 4 && Dog1->position.x - Player1->position.x < 4 && Player1->position.y - Dog1->position.y < 4 && Dog1->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog2->position.x < 4 && Dog2->position.x - Player1->position.x < 4 && Player1->position.y - Dog2->position.y < 4 && Dog2->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog3->position.x < 4 && Dog3->position.x - Player1->position.x < 4 && Player1->position.y - Dog3->position.y < 4 && Dog3->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog4->position.x < 4 && Dog4->position.x - Player1->position.x < 4 && Player1->position.y - Dog4->position.y < 4 && Dog4->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog5->position.x < 4 && Dog5->position.x - Player1->position.x < 4 && Player1->position.y - Dog5->position.y < 4 && Dog5->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog6->position.x < 4 && Dog6->position.x - Player1->position.x < 4 && Player1->position.y - Dog6->position.y < 4 && Dog6->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog7->position.x < 4 && Dog7->position.x - Player1->position.x < 4 && Player1->position.y - Dog7->position.y < 4 && Dog7->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog8->position.x < 4 && Dog8->position.x - Player1->position.x < 4 && Player1->position.y - Dog8->position.y < 4 && Dog8->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Dog9->position.x < 4 && Dog9->position.x - Player1->position.x < 4 && Player1->position.y - Dog9->position.y < 4 && Dog9->position.y - Player1->position.y < 4))
+             (Player1->position.x - Dog1->position.x < 4 && Dog1->position.x - Player1->position.x < 4 && Player1->position.y - Dog1->position.y < 4 && Dog1->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog2->position.x < 4 && Dog2->position.x - Player1->position.x < 4 && Player1->position.y - Dog2->position.y < 4 && Dog2->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog3->position.x < 4 && Dog3->position.x - Player1->position.x < 4 && Player1->position.y - Dog3->position.y < 4 && Dog3->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog4->position.x < 4 && Dog4->position.x - Player1->position.x < 4 && Player1->position.y - Dog4->position.y < 4 && Dog4->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog5->position.x < 4 && Dog5->position.x - Player1->position.x < 4 && Player1->position.y - Dog5->position.y < 4 && Dog5->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog6->position.x < 4 && Dog6->position.x - Player1->position.x < 4 && Player1->position.y - Dog6->position.y < 4 && Dog6->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog7->position.x < 4 && Dog7->position.x - Player1->position.x < 4 && Player1->position.y - Dog7->position.y < 4 && Dog7->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog8->position.x < 4 && Dog8->position.x - Player1->position.x < 4 && Player1->position.y - Dog8->position.y < 4 && Dog8->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Dog9->position.x < 4 && Dog9->position.x - Player1->position.x < 4 && Player1->position.y - Dog9->position.y < 4 && Dog9->position.y - Player1->position.y < 4))
     {
-        Mix_PlayChannel( -1, DogCollide, 0 );
+        Mix_PlayChannel(-1, DogCollide, 0);
         Player1->position.x = 476;
         Player1->position.y = 316;
+        Player1->health--;
     }
 
-    //Check collison with a Prof
+    // Check collison with a Prof
     else if ((Player1->position.x - Prof0->position.x < 4 && Prof0->position.x - Player1->position.x < 4 && Player1->position.y - Prof0->position.y < 4 && Prof0->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Prof1->position.x < 4 && Prof1->position.x - Player1->position.x < 4 && Player1->position.y - Prof1->position.y < 4 && Prof1->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Prof2->position.x < 4 && Prof2->position.x - Player1->position.x < 4 && Player1->position.y - Prof2->position.y < 4 && Prof2->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Prof3->position.x < 4 && Prof3->position.x - Player1->position.x < 4 && Player1->position.y - Prof3->position.y < 4 && Prof3->position.y - Player1->position.y < 4) ||
-        (Player1->position.x - Prof4->position.x < 4 && Prof4->position.x - Player1->position.x < 4 && Player1->position.y - Prof4->position.y < 4 && Prof4->position.y - Player1->position.y < 4))
+             (Player1->position.x - Prof1->position.x < 4 && Prof1->position.x - Player1->position.x < 4 && Player1->position.y - Prof1->position.y < 4 && Prof1->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Prof2->position.x < 4 && Prof2->position.x - Player1->position.x < 4 && Player1->position.y - Prof2->position.y < 4 && Prof2->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Prof3->position.x < 4 && Prof3->position.x - Player1->position.x < 4 && Player1->position.y - Prof3->position.y < 4 && Prof3->position.y - Player1->position.y < 4) ||
+             (Player1->position.x - Prof4->position.x < 4 && Prof4->position.x - Player1->position.x < 4 && Player1->position.y - Prof4->position.y < 4 && Prof4->position.y - Player1->position.y < 4))
     {
-        Mix_PlayChannel( -1, ProfCollide, 0 );
+        Mix_PlayChannel(-1, ProfCollide, 0);
         Key_Reverse = -1;
     }
 }
@@ -1034,7 +1044,7 @@ void WanderIIT::clean()
     // Deallocate Player1 surface
     SDL_FreeSurface(Player1->surface);
     Player1->surface = NULL;
-    
+
     // Deallocate Player2 surface
     SDL_FreeSurface(Player2->surface);
     Player2->surface = NULL;
@@ -1043,20 +1053,20 @@ void WanderIIT::clean()
     SDL_FreeSurface(ScreenSurface);
     ScreenSurface = NULL;
 
-     //Free the sound effects
-    Mix_FreeChunk( DogCollide );
-    Mix_FreeChunk( ProfCollide );
-    Mix_FreeChunk( KeyCorrect );
-    Mix_FreeChunk( Milestone );
-    Mix_FreeChunk( Finish );
+    // Free the sound effects
+    Mix_FreeChunk(DogCollide);
+    Mix_FreeChunk(ProfCollide);
+    Mix_FreeChunk(KeyCorrect);
+    Mix_FreeChunk(Milestone);
+    Mix_FreeChunk(Finish);
     DogCollide = NULL;
     ProfCollide = NULL;
     KeyCorrect = NULL;
     Milestone = NULL;
     Finish = NULL;
-    
-    //Free the music
-    Mix_FreeMusic( Music );
+
+    // Free the music
+    Mix_FreeMusic(Music);
     Music = NULL;
 
     // Destroy window
@@ -1067,7 +1077,7 @@ void WanderIIT::clean()
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
 
-    //Quit music subsystem
+    // Quit music subsystem
     Mix_Quit();
     // Quit SDL subsystems
     SDL_Quit();

@@ -5,6 +5,7 @@ Player::Player()
     CompletedMilestones = 0;
     GameWon = 0;
     quit = 0;
+    health = LIFE;
 }
 
 Player::~Player()
