@@ -1,5 +1,3 @@
-// Server side C/C++ program to demonstrate Socket
-// programming
 #include "server.h"
 
 server::server()

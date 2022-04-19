@@ -1,5 +1,4 @@
 #include "WanderIIT.h"
-//#include "glad/glad.h"
 
 // Constructor
 WanderIIT::WanderIIT()
@@ -294,8 +293,6 @@ bool WanderIIT::init(const char *name, int xpos, int ypos, int width, int height
     // Display Buttons
     object_buttons = new buttons();
     int hostel = object_buttons->buttons_window(window, renderer);
-
-    cout << hostel << endl;
 
     // We take this input from User
     switch (hostel)
@@ -680,9 +677,6 @@ void WanderIIT::handleEvents()
         // Capture movement of player
         Player1->move(event, state, curr_win_width, curr_win_height, map_pos, Key_Reverse);
     }
-
-    // Apply the Player1->surface image
-    // SDL_BlitSurface( Player1->surface, NULL, ScreenSurface, &offset );
 }
 
 void WanderIIT::update()

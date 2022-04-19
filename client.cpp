@@ -1,5 +1,3 @@
-// Client side C/C++ program to demonstrate Socket
-// programming
 #include "client.h"
 
 #define PORT 8080
