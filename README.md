@@ -38,7 +38,7 @@ Next, on the system which is the server, run
 
     make server
 
-Next, on the system which is the client, make client
+Next, on the system which is the client, run
 
     make client
 
