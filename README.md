@@ -6,7 +6,7 @@
 
 To install SDL2 library on linux, run
 
-    sudo apt-get libsdl2-dev
+    sudo apt-get install libsdl2-dev
 
 To install SDL2_mixer library on linux, run
 
